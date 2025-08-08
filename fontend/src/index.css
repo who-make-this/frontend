@@ -1,9 +1,10 @@
 @import "tailwindcss";
-
-
-
-
-
+@font-face {
+  font-family: 'MuseumClassic';
+  src: url('/fonts/MuseumClassic-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
