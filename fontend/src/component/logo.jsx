@@ -46,7 +46,7 @@ export default function Logo() {
                 <div className={`w-full transition-all duration-[250ms] ${menuOpen ? "opacity-100 py-4" : "opacity-0 py-0"} flex flex-col items-start px-3 py-1 space-y-7   `}>
                     {menuOpen && (
                         <>
-                            <button className="text-white text-[16px] font-bold">시장의 비밀 이야기</button>
+                            <button className="text-white text-[16px] font-bold ">시장의 비밀 이야기</button>
                             <button className="text-white text-[16px] font-bold">탐험 일지</button>
                             <button className="text-white text-[16px] font-bold">탐험가 정보</button>
                         </>
