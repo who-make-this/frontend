@@ -5,6 +5,11 @@
   font-weight: normal;
   font-style: normal;
 }
+:root {
+  font-family: pretendardVariable;
+  font-weight: 100;
+}
+
 
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
