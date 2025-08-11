@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/logo";
 import MissionStatus from "../../component/missionStatus";
@@ -10,6 +10,35 @@ import exit from "../../assets/exit.svg";
 import vectorCamera from "../../assets/vectorCamera.svg";
 
 export default function MissionPage() {
+  const [popupVisible, setPopupVisible] = useState(false);
+  const [popupActive, setPopupActive] = useState(false);
+
+  const missions = [
+    {
+      type: "먹보형",
+      number: 5,
+      title: "먹보 미션",
+      description: "먹자 먹자 미션",
+    },
+  ];
+
+  const openPopup = () => {
+    setPopupVisible(true);
+    setTimeout(() => setPopupActive(true), 20);
+  };
+
+  const closePopup = () => {
+    setPopupActive(false);
+    setTimeout(() => setPopupVisible(false), 300);
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = popupVisible ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [popupVisible]);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-[375px] h-[812px] bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
@@ -26,7 +55,7 @@ export default function MissionPage() {
           <Logo />
         </div>
 
-        {/* 유형별 미션 완료 상태 */}
+        {/* 타입별 현황 */}
         <div className="absolute top-[108px] flex flex-row w-[349px] z-10">
           <div className="flex w-full gap-2">
             <MissionStatus
@@ -52,12 +81,17 @@ export default function MissionPage() {
 
         {/* 미션 카드 */}
         <div className="absolute flex justify-center z-15">
-            <MissionCard></MissionCard>
+          {missions.map((mission, index) => (
+            <MissionCard key={index} {...mission} />
+          ))}
         </div>
 
-        {/* 종료 + 인증 버튼 */}
+        {/* 하단 버튼 */}
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-10">
-          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border-2 border-white rounded-xl text-white">
+          <button
+            onClick={openPopup}
+            className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white"
+          >
             <img
               src={exit}
               className="w-[24px] h-[24px] object-contain"
@@ -65,7 +99,7 @@ export default function MissionPage() {
             />
             <div className="ps-2">탐험 종료</div>
           </button>
-          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border-2 border-black rounded-xl text-black bg-white">
+          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white">
             <img
               src={vectorCamera}
               className="w-[24px] h-[24px] object-contain"
@@ -74,6 +108,51 @@ export default function MissionPage() {
             <div className="ps-2">미션 인증</div>
           </button>
         </div>
+
+        {/* 탐험 종료 팝업 */}
+        {popupVisible && (
+          <>
+            <div
+              className={`absolute inset-0 z-40 transition-opacity duration-300 ${
+                popupActive ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+              onClick={closePopup}
+            />
+            <div
+              role="dialog"
+              aria-modal="true"
+              className={`absolute bottom-0 left-0 w-full z-50 transform transition-transform duration-300 ease-out ${
+                popupActive ? "translate-y-0" : "translate-y-full"
+              }`}
+            >
+              <div className="bg-white rounded-t-2xl p-8 pb-16">
+                <div className="text-2xl font-medium p-1">탐험 종료</div>
+                <div className="p-1 mb-6">
+                  하루에 한 번만 탐험이 가능합니다. 지금 탐험을 종료하면, 오늘은
+                  더 이상 진행할 수 없어요.
+                  <div className="text-[#9A8C4F]">
+                    ( 해커톤 행사 기간엔 해당 없음 )
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
+                    onClick={closePopup}
+                  >
+                    그만하기
+                  </button>
+                  <button
+                    className="flex-1 py-3 rounded-full bg-[#9A8C4F] text-white"
+                    onClick={closePopup}
+                  >
+                    탐험 계속하기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
