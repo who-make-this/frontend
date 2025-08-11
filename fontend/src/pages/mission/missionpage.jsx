@@ -48,9 +48,10 @@ export default function MissionPage() {
           className="w-full h-full object-cover"
         />
         <div
-          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 backdrop-blur-[10px]"
+          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
           style={{ backgroundColor: "#2B2B2BB2" }}
         />
+        <div className="absolute top-10 w-full h-full  backdrop-blur-[10px]"></div>
         <div className="absolute top-0 left-0 w-[375px] h-[32px] flex items-center z-30">
           <Logo />
         </div>
@@ -116,7 +117,7 @@ export default function MissionPage() {
               className={`absolute inset-0 z-40 transition-opacity duration-300 ${
                 popupActive ? "opacity-100" : "opacity-0"
               }`}
-              style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+              style={{ backgroundColor: "rgba(0,0,0,0.8)" }}
               onClick={closePopup}
             />
             <div
