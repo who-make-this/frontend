@@ -51,7 +51,7 @@ export default function MissionPage() {
           className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
           style={{ backgroundColor: "#2B2B2BB2" }}
         />
-        <div className="absolute top-10 w-full h-full  backdrop-blur-[10px]"></div>
+        <div className="absolute top-24 w-full h-full  backdrop-blur-[10px] z-0"></div>
         <div className="absolute top-0 left-0 w-[375px] h-[32px] flex items-center z-30">
           <Logo />
         </div>
