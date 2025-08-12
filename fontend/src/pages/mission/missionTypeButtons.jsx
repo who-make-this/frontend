@@ -6,7 +6,7 @@ export default function missionTypeButtons({
   selectedType,
   setSelectedType,
 }) {
-  // 버튼별 이동 거리(px) — index 기준, 필요에 따라 조절하세요
+  // 버튼별 이동 거리(px) — index 기준
   const translateXValues = [220, 110, 0];
 
   return (
