@@ -77,7 +77,7 @@ export default function MissionCard({ type, number, title, description }) {
       {/* 미션 설명 */}
       <div className="flex flex-col px-8 py-4">
         <div className="flex font-extrabold text-[28px]">{title}</div>
-        <div className="flex text-[16px]">{description}</div>
+        <div className="flex font-light text-[16px]">{description}</div>
       </div>
     </div>
   );

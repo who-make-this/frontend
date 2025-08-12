@@ -23,7 +23,7 @@ function App() {
   }, [])
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard] font-thin">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard]">
       <div
         style={{
           transform: `scale(${scale})`,

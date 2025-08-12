@@ -57,7 +57,7 @@ export default function MissionPage() {
         </div>
 
         {/* 타입별 현황 */}
-        <div className="absolute top-[108px] flex flex-row w-[349px] z-10">
+        <div className="absolute top-26 flex flex-row w-[349px] z-10">
           <div className="flex w-full gap-2">
             <MissionStatus
               icon={typeMood}
