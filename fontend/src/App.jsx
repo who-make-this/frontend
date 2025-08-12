@@ -10,7 +10,6 @@ function App() {
   const baseHeight = 812
   const [scale, setScale] = useState(1)
 
-  // 화면 크기 변경 시 scale 값 업데이트
   useEffect(() => {
     const handleResize = () => {
       const scaleX = window.innerWidth / baseWidth
