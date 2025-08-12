@@ -7,6 +7,7 @@ module.exports = {
       fontFamily: {
         pretendard: ["PretendardVariable", "ui-sans-serif", "system-ui", "sans-serif"],
       },
+      
     },
   },
   plugins: [],

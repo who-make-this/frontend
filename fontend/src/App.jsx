@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import MainPage from './pages/main/mainPage'
 import MissionPage from './pages/mission/missionpage'
+import MyPage from './pages/mypage/mypage'
 
 function App() {
   const baseWidth = 375
@@ -38,6 +39,7 @@ function App() {
           <nav className="p-2 bg-gray-200 flex justify-around">
             <Link to="/">Main</Link>
             <Link to="/mission">Mission</Link>
+            <Link to="/mypage">My Page</Link>
           </nav>
 
           {/* 페이지 영역 */}
@@ -45,6 +47,7 @@ function App() {
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/mission" element={<MissionPage />} />
+              <Route path="/mypage" element={<MyPage />} />
             </Routes>
           </div>
         </Router>
