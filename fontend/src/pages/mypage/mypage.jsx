@@ -5,12 +5,9 @@ import TicketImg from "../../assets/ticket.svg";
 import CouponModal from "../../component/couponModal";
 
 export default function MyPage() {
-    // 모달의 열림/닫힘 상태를 관리하는 State 추가
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // 사라지는 애니메이션을 위한 상태 추가
     const [isClosing, setIsClosing] = useState(false);
 
-    // 티켓 정보 데이터
     const ticketData = {
         adventurer: "후메잌디스!!",
         place: "구미 새마을중앙시장",
@@ -20,46 +17,35 @@ export default function MyPage() {
         cleared: 42,
     };
 
-    // 마일리지 데이터
     const mileageData = {
-        current: 4000, 
+        current: 50000, 
         max: 5000,
     };
     
     const progressPercentage = Math.min((mileageData.current / mileageData.max) * 100, 100);
 
-    // 모달을 닫는 함수 (사라지는 애니메이션 포함)
     const handleCloseModal = () => {
-        setIsClosing(true); // 닫힘 애니메이션 시작
-        // 애니메이션 시간(250ms) 후 모달을 완전히 제거
+        setIsClosing(true);
         setTimeout(() => {
             setIsModalOpen(false);
-            setIsClosing(false); // 상태 초기화
+            setIsClosing(false); 
         }, 250);
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            {/* 앱 화면 컨테이너 (하단 공백 문제 해결을 위해 모달이 이 안에 위치해야 함) */}
             <div className="w-[375px] h-[812px] bg-white shadow-sm relative overflow-hidden">
-                {/* 배경 이미지 */}
                 <img
                     src={MyPageImg}
                     alt="MyPage Background"
                     className="absolute top-0 left-0 w-full h-full object-cover"
                 />
-
-                {/* 로고 컴포넌트 */}
                 <Logo textColor="text-black" iconColor="black" />
-
-                {/* 티켓 이미지 (배경 역할) */}
                 <img
                     src={TicketImg}
                     alt="미션 인증"
                     className="w-[355px] h-[655px] absolute top-[103px] left-1/2 -translate-x-1/2 object-contain"
                 />
-                
-                {/* 티켓 콘텐츠를 담는 컨테이너 */}
                 <div className="absolute top-[102px] left-1/2 -translate-x-1/2 w-[355px] h-[655px] px-8 py-10 flex flex-col">
                     
                     {/* Adventurer 정보 */}
@@ -87,7 +73,7 @@ export default function MyPage() {
                                 <p className="text-[16px] font-semibold">{ticketData.place}</p>
                             </div>
                             <div className="absolute right-3">
-                                <p className="text-[15px] font-[400] text-[#2B2B2B80]">Date</p>
+                                <p className="text-[15px] font-[400] text-[#2B2B2B80]">Start Date</p>
                                 <p className="text-[16px] font-semibold text-right">{ticketData.date}</p>
                             </div>
                         </div>
@@ -133,16 +119,20 @@ export default function MyPage() {
                                     style={{ width: `${progressPercentage}%` }}
                                 ></div>
                             </div>
-                            <div className="flex justify-between text-sm font-[400] text-[#2B2B2B80] mt-1">
+                            <div className="flex justify-between text-sm font-[400] text-[#2B2B2B80] mt-1 tracking-[-0.2px]">
                                 <span>0</span>
                                 <span>{mileageData.max.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
+
+                    <p>
+                        <span className="flex justify-center mr-0 text-[12px] font-[400]  text-[#2B2B2B80] tracking-[-0.4px]">월 최대 적립 마일리지는 5,000M 입니다.</span>
+                    </p>
                 </div>
 
                 {/* isModalOpen이 true일 때만 CouponModal을 렌더링 (앱 화면 내부에 위치) */}
-                {isModalOpen && <CouponModal onClose={handleCloseModal} isClosing={isClosing} />}
+                {isModalOpen && <CouponModal onClose={handleCloseModal} isClosing={isClosing} currentMileage={mileageData.current}  />}
             </div>
         </div>
     );
