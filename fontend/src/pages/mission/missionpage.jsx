@@ -3,23 +3,52 @@ import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/Logo";
 import MissionStatus from "../../component/missionStatus";
 import MissionCard from "../../component/missionCard";
+import CompleteMission from "./completeMission";
+import MissionTypeButtons from "./missionTypeButtons";
 import typeEat from "../../assets/type_eat.png";
 import typeMood from "../../assets/type_mood.png";
 import typeTravel from "../../assets/type_travel.png";
 import exit from "../../assets/exit.svg";
 import vectorCamera from "../../assets/vectorCamera.svg";
 
+import refresh from "../../assets/iconoir_refresh.svg";
+import refresh_black from "../../assets/iconoir_refresh_black.svg";
+
 export default function MissionPage() {
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupActive, setPopupActive] = useState(false);
+  const [selectedType, setSelectedType] = useState(null);
+  const [randomMission, setRandomMission] = useState(null);
 
-  const missions = [
+  // 새로고침 관련
+  const [refreshClicked, setRefreshClicked] = useState(false);
+  const [refreshHovered, setRefreshHovered] = useState(false);
+
+  const missionTypes = [
+    { type: "감성형", count: 12, icon: typeMood, bgColor: "#A792B960" },
+    { type: "먹보형", count: 8, icon: typeEat, bgColor: "#D19B9860" },
+    { type: "탐험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
+  ];
+
+  const currentMissions = [
+    {
+      type: "감성형",
+      number: 5,
+      title: "하늘 사진 찍기",
+      description: "구름 포함",
+    },
     {
       type: "먹보형",
-      number: 5,
-      title: "먹보 미션",
-      description: "먹자 먹자 미션",
+      number: 1,
+      title: "라면 먹기",
+      description: "편의점에서",
     },
+  ];
+
+  const collectedMissions = [
+    { type: "감성형", title: "벚꽃 사진", description: "봄에 찍은 사진" },
+    { type: "감성형", title: "노을 사진", description: "해질 무렵" },
+    { type: "먹보형", title: "햄버거 먹기", description: "세트 메뉴" },
   ];
 
   const openPopup = () => {
@@ -32,12 +61,34 @@ export default function MissionPage() {
     setTimeout(() => setPopupVisible(false), 300);
   };
 
+  const missionTypesWithCount = missionTypes.map((m) => ({
+    ...m,
+    count: collectedMissions.filter((cm) => cm.type === m.type).length,
+  }));
+
+  // 새로고침 버튼 클릭 핸들러
+  const handleRefreshClick = () => {
+    setRefreshClicked(true);
+    // 새로고침
+    const randomIndex = Math.floor(Math.random() * currentMissions.length);
+    setRandomMission(currentMissions[randomIndex]);
+
+    // 일정 시간 후 클릭 상태 리셋
+    setTimeout(() => setRefreshClicked(false), 1000);
+  };
+
   useEffect(() => {
     document.body.style.overflow = popupVisible ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [popupVisible]);
+
+  useEffect(() => {
+    // 페이지 로드 때 랜덤 미션 선택
+    const randomIndex = Math.floor(Math.random() * currentMissions.length);
+    setRandomMission(currentMissions[randomIndex]);
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -56,35 +107,45 @@ export default function MissionPage() {
           <Logo />
         </div>
 
-        {/* 타입별 현황 */}
-        <div className="absolute top-26 flex flex-row w-[349px] z-10">
-          <div className="flex w-full gap-2">
-            <MissionStatus
-              icon={typeMood}
-              label="감성형"
-              value={12}
-              bgColor="#A792B960"
-            />
-            <MissionStatus
-              icon={typeEat}
-              label="먹보형"
-              value={8}
-              bgColor="#D19B9860"
-            />
-            <MissionStatus
-              icon={typeTravel}
-              label="탐험형"
-              value={5}
-              bgColor="#889F6960"
-            />
-          </div>
+        {/* 타입 버튼 영역 */}
+        <div className="absolute left-4 top-26 flex flex-row w-[330px] z-10 items-center">
+          <MissionTypeButtons
+            missionTypesWithCount={missionTypesWithCount}
+            selectedType={selectedType}
+            setSelectedType={setSelectedType}
+          />
         </div>
 
-        {/* 미션 카드 */}
-        <div className="absolute flex justify-center z-15">
-          {missions.map((mission, index) => (
-            <MissionCard key={index} {...mission} />
-          ))}
+        {/* 카드 영역 위에 새로고침 버튼 추가 */}
+        <div className="absolute top-[160px] right-8 z-20">
+          <button
+            onClick={handleRefreshClick}
+            onMouseEnter={() => setRefreshHovered(true)}
+            onMouseLeave={() => setRefreshHovered(false)}
+            className={`w-10 h-10 flex items-center backdrop-blur-[4px] justify-center rounded-full transition
+      ${refreshHovered ? "bg-white/50" : "bg-white/20 hover:bg-white/50"}`}
+            aria-label="미션 새로고침"
+          >
+            <img
+              src={refreshHovered || refreshClicked ? refresh_black : refresh}
+              alt="새로고침 아이콘"
+              className="w-6 h-6"
+              draggable={false}
+            />
+          </button>
+        </div>
+
+        {/* 기존 카드 영역 */}
+        <div className="absolute flex flex-col items-center z-15 gap-4 top-[180px] px-4 overflow-auto max-h-[464px] max-w-[309px]">
+          {selectedType ? (
+            <CompleteMission
+              missions={collectedMissions.filter(
+                (m) => m.type === selectedType
+              )}
+            />
+          ) : (
+            randomMission && <MissionCard {...randomMission} />
+          )}
         </div>
 
         {/* 하단 버튼 */}
