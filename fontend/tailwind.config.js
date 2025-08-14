@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       fontFamily: {
         pretendard: ["PretendardVariable", "ui-sans-serif", "system-ui", "sans-serif"],
+        museum: ["MuseumClassic", "sans-serif"],
       },
       
     },

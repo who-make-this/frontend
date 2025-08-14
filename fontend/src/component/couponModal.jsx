@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ExchangeConfirmModal from './ExchangeConfirmModal';
-import ExchangeCompleteModal from './ExchangeCompleteModal'; // 1. 새로 만든 완료 모달 임포트
+import ExchangeCompleteModal from './ExchangeCompleteModal';
 
 export default function CouponModal({ onClose, isClosing, currentMileage }) {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
@@ -21,14 +21,12 @@ export default function CouponModal({ onClose, isClosing, currentMileage }) {
     }, 250);
   };
 
-  // 3. 교환 확정 시, 확인 모달을 닫고 완료 모달을 엽니다.
   const handleConfirmExchange = () => {
     console.log(`${selectedCoupon.name} 교환 처리 완료!`);
     
     setIsConfirmClosing(true);
     setTimeout(() => {
       setIsConfirmClosing(false);
-      // 확인 모달이 사라진 후, 완료 모달을 엽니다.
       setExchangeComplete(true);
     }, 250);
   };
@@ -74,7 +72,6 @@ export default function CouponModal({ onClose, isClosing, currentMileage }) {
         </div>
       </div>
 
-      {/* 확인 모달 */}
       <ExchangeConfirmModal 
         coupon={selectedCoupon}
         onConfirm={handleConfirmExchange}
@@ -82,7 +79,6 @@ export default function CouponModal({ onClose, isClosing, currentMileage }) {
         isConfirmClosing={isConfirmClosing}
       />
 
-      {/* 4. 완료 모달을 조건부로 렌더링합니다. */}
       {exchangeComplete && (
         <ExchangeCompleteModal 
           coupon={selectedCoupon}

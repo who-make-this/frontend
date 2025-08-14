@@ -4,6 +4,7 @@ import './App.css'
 import MainPage from './pages/main/mainPage'
 import MissionPage from './pages/mission/missionpage'
 import MyPage from './pages/mypage/mypage'
+import Secretpage from './pages/secretstory/secretpage'
 
 function App() {
   const baseWidth = 375
@@ -39,6 +40,7 @@ function App() {
             <Link to="/">Main</Link>
             <Link to="/mission">Mission</Link>
             <Link to="/mypage">My Page</Link>
+            <Link to="/secret">Secret</Link>
           </nav>
 
           {/* 페이지 영역 */}
@@ -47,6 +49,7 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/mission" element={<MissionPage />} />
               <Route path="/mypage" element={<MyPage />} />
+              <Route path="/secret" element={<Secretpage />} />
             </Routes>
           </div>
         </Router>
