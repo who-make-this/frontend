@@ -76,7 +76,7 @@ export default function MissionProgress({ clearedMissions }) {
                 className="w-full h-full"
               />
               <span
-                className={`absolute text-sm z-20 ${isEnabled ? 'text-[#513D2E] font-black' : 'text-[#FFFAFA] font-bold'}`}
+                className={`absolute text-sm z-15 ${isEnabled ? 'text-[#513D2E] font-black' : 'text-[#FFFAFA] font-bold'}`}
               >
                 {step}
               </span>
