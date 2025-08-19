@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/Logo";
-import MissionStatus from "../../component/missionStatus";
 import MissionCard from "../../component/missionCard";
-import CompleteMission from "./completeMission";
-import MissionTypeButtons from "./missionTypeButtons";
+import CompleteMission from "./CompleteMission";
+import MissionTypeButtons from "./MissionTypeButtons";
 import typeEat from "../../assets/type_eat.png";
 import typeMood from "../../assets/type_mood.png";
 import typeTravel from "../../assets/type_travel.png";
 import exit from "../../assets/exit.svg";
 import vectorCamera from "../../assets/vectorCamera.svg";
-
 import refresh from "../../assets/iconoir_refresh.svg";
 import refresh_black from "../../assets/iconoir_refresh_black.svg";
+import { useNavigate } from "react-router-dom";
 
 export default function MissionPage() {
+  const navigate = useNavigate();
+
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupActive, setPopupActive] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [randomMission, setRandomMission] = useState(null);
+  const [cannotExitVisible, setCannotExitVisible] = useState(false);
 
   // 새로고침 관련
   const [refreshClicked, setRefreshClicked] = useState(false);
@@ -46,9 +48,24 @@ export default function MissionPage() {
   ];
 
   const collectedMissions = [
-    { type: "감성형", title: "벚꽃 사진", description: "봄에 찍은 사진" },
-    { type: "감성형", title: "노을 사진", description: "해질 무렵" },
-    { type: "먹보형", title: "햄버거 먹기", description: "세트 메뉴" },
+    {
+      type: "감성형",
+      title: "벚꽃 사진",
+      number: "2",
+      description: "봄에 찍은 사진",
+    },
+    {
+      type: "감성형",
+      title: "노을 사진",
+      number: "2",
+      description: "해질 무렵",
+    },
+    {
+      type: "먹보형",
+      title: "햄버거 먹기",
+      number: "2",
+      description: "세트 메뉴",
+    },
   ];
 
   const openPopup = () => {
@@ -59,6 +76,13 @@ export default function MissionPage() {
   const closePopup = () => {
     setPopupActive(false);
     setTimeout(() => setPopupVisible(false), 300);
+    if (collectedMissions.length === 0) {
+      setCannotExitVisible(true);
+    }
+  };
+
+  const closeCannotExit = () => {
+    setCannotExitVisible(false);
   };
 
   const missionTypesWithCount = missionTypes.map((m) => ({
@@ -91,21 +115,20 @@ export default function MissionPage() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-[375px] h-[812px] bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
+    <div className="w-[375px] h-[812px] flex min-h-screen bg-gray-100">
+      <div className="fixed top-0 left-0 w-full z-30">
+        <Logo />
+      </div>
+      <div className=" bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
         <img
           src={MainPageImg}
           alt="Main Page"
           className="w-full h-full object-cover"
         />
         <div
-          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0"
+          className="absolute top-0 left-0 w-full h-full pointer-events-none backdrop-blur-[10px] z-0"
           style={{ backgroundColor: "#2B2B2BB2" }}
         />
-        <div className="absolute top-24 w-full h-full  backdrop-blur-[10px] z-0"></div>
-        <div className="absolute top-0 left-0 w-[375px] h-[32px] flex items-center z-30">
-          <Logo />
-        </div>
 
         {/* 타입 버튼 영역 */}
         <div className="absolute left-4 top-26 flex flex-row w-[330px] z-10 items-center">
@@ -118,21 +141,23 @@ export default function MissionPage() {
 
         {/* 카드 영역 위에 새로고침 버튼 추가 */}
         <div className="absolute top-[160px] right-8 z-20">
-          <button
-            onClick={handleRefreshClick}
-            onMouseEnter={() => setRefreshHovered(true)}
-            onMouseLeave={() => setRefreshHovered(false)}
-            className={`w-10 h-10 flex items-center backdrop-blur-[4px] justify-center rounded-full transition
+          {!selectedType ? (
+            <button
+              onClick={handleRefreshClick}
+              onMouseEnter={() => setRefreshHovered(true)}
+              onMouseLeave={() => setRefreshHovered(false)}
+              className={`w-10 h-10 flex items-center backdrop-blur-[4px] justify-center rounded-full transition
       ${refreshHovered ? "bg-white/50" : "bg-white/20 hover:bg-white/50"}`}
-            aria-label="미션 새로고침"
-          >
-            <img
-              src={refreshHovered || refreshClicked ? refresh_black : refresh}
-              alt="새로고침 아이콘"
-              className="w-6 h-6"
-              draggable={false}
-            />
-          </button>
+              aria-label="미션 새로고침"
+            >
+              <img
+                src={refreshHovered || refreshClicked ? refresh_black : refresh}
+                alt="새로고침 아이콘"
+                className="w-6 h-6"
+                draggable={false}
+              />
+            </button>
+          ) : null}
         </div>
 
         {/* 기존 카드 영역 */}
@@ -152,7 +177,7 @@ export default function MissionPage() {
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-10">
           <button
             onClick={openPopup}
-            className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white"
+            className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
           >
             <img
               src={exit}
@@ -161,7 +186,7 @@ export default function MissionPage() {
             />
             <div className="ps-2">탐험 종료</div>
           </button>
-          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white">
+          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out  active:bg-[#A47764] active:text-white active:font-bold">
             <img
               src={vectorCamera}
               className="w-[24px] h-[24px] object-contain"
@@ -214,6 +239,33 @@ export default function MissionPage() {
               </div>
             </div>
           </>
+        )}
+
+        {/* 탐험 종료 불가 팝업 */}
+        {cannotExitVisible && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70">
+            <div className="w-[349px] h-[236px] bg-white rounded-2xl p-8">
+              <div className="text-2xl font-medium p-1">탐험 종료 불가</div>
+              <div className="p-1 mb-6">
+                아직 미션이 하나도 완료되지 않았어요! 미션 1개 이상 수행 후
+                종료할 수 있어요.
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => navigate("/")}
+                  className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
+                >
+                  나가기
+                </button>
+                <button
+                  onClick={closeCannotExit}
+                  className="flex-1 py-3 rounded-full bg-[#9A8C4F] text-white"
+                >
+                  탐험 계속하기
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

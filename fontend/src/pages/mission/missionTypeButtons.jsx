@@ -1,4 +1,3 @@
-import React from "react";
 import MissionStatus from "../../component/missionStatus";
 
 export default function missionTypeButtons({

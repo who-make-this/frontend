@@ -16,7 +16,7 @@ export default function MissionCard({ type, number, title, description }) {
   const [borderRadius, setBorderRadius] = useState("24px");
   const [padding, setpadding] = useState("6");
 
-  // 업데이트 함수: 카드 너비에 따라 모든 값 조정
+  // 카드 너비에 따라 모든 값 조정
   useEffect(() => {
     function updateSize() {
       if (!cardRef.current) return;
@@ -75,24 +75,7 @@ export default function MissionCard({ type, number, title, description }) {
           "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
       }}
     >
-      {/* 새로고침 버튼 */}
-      {/* <button
-        className={`absolute w-10 h-10 flex items-center backdrop-blur justify-center rounded-full transition
-          ${isHovered ? "bg-white/50" : "bg-white/20 hover:bg-white/50"}`}
-        aria-label="새로고침"
-        onClick={handleClick}
-        style={{ top: "-16px", right: "-16px" }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <img
-          src={isHovered || clicked ? refresh_black : refresh}
-          alt="새로고침 아이콘"
-          className="w-6 h-6"
-          draggable={false}
-        />
-      </button> */}
-
+    
       {/* 카드 태그 */}
       <div
         className="flex justify-between text-gray-800 font-medium"

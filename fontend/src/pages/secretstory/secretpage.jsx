@@ -47,9 +47,9 @@ export default function Secretpage() {
                 <img src={SecretPageImg} alt="Secretstory Page" className="absolute top-0 left-0 w-full h-full object-cover" />
                 <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0" style={{ backgroundColor: "#2B2B2B4D" }} />
                 
-                <div className="absolute top-0 left-0 w-full px-4 pt-2 z-20">
+                <div className="absolute top-0 left-0 w-full z-20">
                     <Logo />
-                    <div className="mt-25 flex justify-center">
+                    <div className="px-4 pt-2 mt-25 flex justify-center">
                         <MissionProgress clearedMissions={missionsCompleted} />
                     </div>
                 </div>
