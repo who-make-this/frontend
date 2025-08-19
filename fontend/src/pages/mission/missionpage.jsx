@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/Logo";
 import MissionCard from "../../component/missionCard";
@@ -22,7 +22,6 @@ export default function MissionPage() {
   const [randomMission, setRandomMission] = useState(null);
   const [cannotExitVisible, setCannotExitVisible] = useState(false);
 
-  // 새로고침 관련
   const [refreshClicked, setRefreshClicked] = useState(false);
   const [refreshHovered, setRefreshHovered] = useState(false);
 
@@ -90,48 +89,64 @@ export default function MissionPage() {
     count: collectedMissions.filter((cm) => cm.type === m.type).length,
   }));
 
-  // 새로고침 버튼 클릭 핸들러
   const handleRefreshClick = () => {
     setRefreshClicked(true);
-    // 새로고침
     const randomIndex = Math.floor(Math.random() * currentMissions.length);
     setRandomMission(currentMissions[randomIndex]);
-
-    // 일정 시간 후 클릭 상태 리셋
     setTimeout(() => setRefreshClicked(false), 1000);
   };
 
   useEffect(() => {
-    document.body.style.overflow = popupVisible ? "hidden" : "";
+    document.body.style.overflow = popupVisible || cannotExitVisible ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [popupVisible]);
+  }, [popupVisible, cannotExitVisible]);
 
   useEffect(() => {
-    // 페이지 로드 때 랜덤 미션 선택
     const randomIndex = Math.floor(Math.random() * currentMissions.length);
     setRandomMission(currentMissions[randomIndex]);
   }, []);
+
+  const selectedTypeColor = selectedType
+    ? missionTypes.find(type => type.type === selectedType)?.bgColor.slice(0, 7)
+    : null;
+    
+  const gradientColor = selectedTypeColor ? `${selectedTypeColor}60` : "#2B2B2B80";
+
+  // 선택된 타입에 해당하는 완료된 미션 목록
+  const completedMissionsOfType = selectedType
+    ? collectedMissions.filter(m => m.type === selectedType)
+    : [];
 
   return (
     <div className="w-[375px] h-[812px] flex min-h-screen bg-gray-100">
       <div className="fixed top-0 left-0 w-full z-30">
         <Logo />
       </div>
-      <div className=" bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
+      <div className="bg-white shadow-sm relative flex items-center justify-center overflow-hidden ">
         <img
           src={MainPageImg}
           alt="Main Page"
           className="w-full h-full object-cover"
         />
+
+        {/* 배경 오버레이 */}
         <div
-          className="absolute top-0 left-0 w-full h-full pointer-events-none backdrop-blur-[10px] z-0"
-          style={{ backgroundColor: "#2B2B2BB2" }}
+          className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 backdrop-blur-[10px]"
+          style={{ backgroundColor: "#2B2B2BB2"}}
+        />
+        
+        {/* 새로운 그라데이션 블러 오버레이 */}
+        <div
+          className="absolute top-0 left-0 w-full h-full pointer-events-none z-10"
+          style={{
+            background: `linear-gradient(to top right, transparent, 60%, ${gradientColor})`,
+          }}
         />
 
         {/* 타입 버튼 영역 */}
-        <div className="absolute left-4 top-26 flex flex-row w-[330px] z-10 items-center">
+        <div className="absolute left-4 top-16 flex flex-row w-[330px] z-20 items-center">
           <MissionTypeButtons
             missionTypesWithCount={missionTypesWithCount}
             selectedType={selectedType}
@@ -140,14 +155,14 @@ export default function MissionPage() {
         </div>
 
         {/* 카드 영역 위에 새로고침 버튼 추가 */}
-        <div className="absolute top-[160px] right-8 z-20">
+        <div className="absolute top-[140px] right-8 z-30">
           {!selectedType ? (
             <button
               onClick={handleRefreshClick}
               onMouseEnter={() => setRefreshHovered(true)}
               onMouseLeave={() => setRefreshHovered(false)}
               className={`w-10 h-10 flex items-center backdrop-blur-[4px] justify-center rounded-full transition
-      ${refreshHovered ? "bg-white/50" : "bg-white/20 hover:bg-white/50"}`}
+                ${refreshHovered ? "bg-white/50" : "bg-white/20 hover:bg-white/50"}`}
               aria-label="미션 새로고침"
             >
               <img
@@ -161,20 +176,26 @@ export default function MissionPage() {
         </div>
 
         {/* 기존 카드 영역 */}
-        <div className="absolute flex flex-col items-center z-15 gap-4 top-[180px] px-4 overflow-auto max-h-[464px] max-w-[309px]">
+        <div
+          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto max-h-[464px] max-w-[309px] ${
+            selectedType ? "top-[120px]" : "top-[160px]"
+          }`}
+        >
           {selectedType ? (
-            <CompleteMission
-              missions={collectedMissions.filter(
-                (m) => m.type === selectedType
-              )}
-            />
+            completedMissionsOfType.length > 0 ? (
+              <CompleteMission missions={completedMissionsOfType} />
+            ) : (
+              <div className="text-white  text-center text-lg mt-50">
+                아직 성공한 미션이 없어요...
+              </div>
+            )
           ) : (
             randomMission && <MissionCard {...randomMission} />
           )}
         </div>
 
         {/* 하단 버튼 */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-10">
+        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-50">
           <button
             onClick={openPopup}
             className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
@@ -186,7 +207,7 @@ export default function MissionPage() {
             />
             <div className="ps-2">탐험 종료</div>
           </button>
-          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out  active:bg-[#A47764] active:text-white active:font-bold">
+          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out active:bg-[#A47764] active:text-white active:font-bold">
             <img
               src={vectorCamera}
               className="w-[24px] h-[24px] object-contain"
