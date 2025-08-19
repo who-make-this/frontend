@@ -5,11 +5,11 @@ import Moheom from "./moheom";
 
 export default function MainPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="w-[375px] h-[812px] flex min-h-screen bg-gray-100">
       <div className="fixed top-0 left-0 w-full z-30">
         <Logo />
       </div>
-      <div className="w-[375px] h-[812px] bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
+      <div className=" bg-white shadow-sm relative flex items-center justify-center overflow-hidden">
         <img
           src={MainPageImg}
           alt="Main Page"
