@@ -177,7 +177,7 @@ export default function MissionPage() {
 
         {/* 기존 카드 영역 */}
         <div
-          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto h-[464px] max-h-[464px] max-w-[309px] ${
+          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto max-h-[464px] max-w-[309px] ${
             selectedType ? "top-[120px]" : "top-[160px]"
           }`}
         >
