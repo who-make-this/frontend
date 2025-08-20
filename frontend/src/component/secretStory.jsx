@@ -1,7 +1,7 @@
 import React from "react";
 import { secretStories } from "../data/stories";
-import LockIcon from '../assets/lockIcon.svg';
- 
+import LockIcon from '../assets/lockicon.svg';
+
 export default function SecretStory({ storyId, clearedMissions }) {
     const story = secretStories.find(s => s.id === storyId);
     if (!story) return null;

@@ -14,7 +14,7 @@ export default function MissionCard({ type, number, title, description }) {
   const [cardHeight, setCardHeight] = useState(464);
   const [paddingTop, setPaddingTop] = useState("pt-12");
   const [borderRadius, setBorderRadius] = useState("24px");
-  const [padding, setpadding] = useState("6");
+  const [padding, setpadding] = useState("100");
 
   // 카드 너비에 따라 모든 값 조정
   useEffect(() => {
