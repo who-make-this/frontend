@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
 import MainPage from "./pages/main/mainPage";
-import MissionPage from "./pages/mission/missionpage";
+import MissionPage from "./pages/mission/Missionpage";
 import MyPage from "./pages/mypage/mypage";
 import Secretpage from "./pages/secretstory/secretpage";
 
