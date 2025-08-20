@@ -121,7 +121,7 @@ export default function MissionPage() {
 
   return (
     <div className="w-[375px] h-[812px] flex min-h-screen bg-gray-100">
-      <div className="fixed top-0 left-0 w-full z-30">
+      <div className="fixed top-0 left-0 w-full z-50">
         <Logo />
       </div>
       <div className="bg-white shadow-sm relative flex items-center justify-center overflow-hidden ">
