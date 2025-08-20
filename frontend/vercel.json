@@ -1,4 +1,6 @@
 {
+  "version": 2,
+  "root": "frontend",
   "rewrites": [
     {
       "source": "/(.*)",
