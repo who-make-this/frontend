@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Logo from "../../component/Llogo";
+import Logo from "../../component/Logo";
 import MyPageImg from "../../assets/mypageimg.svg";
 import TicketImg from "../../assets/ticket.svg";
 import CouponModal from "../../component/couponModal";

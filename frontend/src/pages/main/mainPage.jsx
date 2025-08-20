@@ -1,6 +1,6 @@
 import React from "react";
 import MainPageImg from "../../assets/mainPage.svg";
-import Logo from "../../component/Llogo";
+import Logo from "../../component/Logo";
 import Moheom from "./moheom";
 
 export default function MainPage() {

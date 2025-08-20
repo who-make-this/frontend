@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
-import Logo from "../../component/Llogo";
+import Logo from "../../component/Logo";
 import MissionCard from "../../component/missionCard";
 import CompleteMission from "./completeMission";
 import MissionTypeButtons from "./MissionTypeButtons";
