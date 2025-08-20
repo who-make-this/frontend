@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/Logo";
 import MissionCard from "../../component/missionCard";
-import CompleteMission from "./completeMission";
+import CompleteMission from "./CompleteMission";
 import MissionTypeButtons from "./MissionTypeButtons";
 import typeEat from "../../assets/type_eat.png";
 import typeMood from "../../assets/type_mood.png";
