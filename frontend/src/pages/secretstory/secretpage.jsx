@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Logo from "../../component/logo";
+import Logo from "../../component/Logo";
 import SecretPageImg from "../../assets/secretbgimg.svg";
 import MissionProgress from '../../component/missionProgress';
 import SecretStory from '../../component/secretStory';
