@@ -11,10 +11,10 @@ export default function MissionCard({ type, number, title, description }) {
 
   // 상태들: 폰트 크기, 카드 높이, pt, rounded
   const [fontSize, setFontSize] = useState(24);
-  const [cardHeight, setCardHeight] = useState(350);
+  const [cardHeight, setCardHeight] = useState(464);
   const [paddingTop, setPaddingTop] = useState("pt-12");
   const [borderRadius, setBorderRadius] = useState("24px");
-  const [padding, setpadding] = useState("6");
+  const [padding, setpadding] = useState("24");
 
   // 카드 너비에 따라 모든 값 조정
   useEffect(() => {
