@@ -11,9 +11,9 @@ export default function ReportCard({ reportData }) {
     if (!reportData) return null;
 
     const typeIcons = {
-        '먹보형': ClocheIcon,
-        '모험형': TravelIcon,
-        '감성형': MoodIcon,
+        "먹보형": ClocheIcon,
+        "모험형": TravelIcon,
+        "감성형": MoodIcon,
     };
 
     const MainTypeIcon = typeIcons[reportData.mainType] || ClocheIcon;
@@ -40,8 +40,8 @@ export default function ReportCard({ reportData }) {
                             <p className="text-[16px] text-white">탐험 일시</p>
                         </div>
                         <div className="absolute top-[70px] font-[500] underline decoration-1 left-[20px] space-y-1">
-                            <p className="text-[16px] text-[#2B2B2B] ">{reportData.date}</p>
-                            <p className="text-[16px] mt-2 text-[#2B2B2B]">{reportData.timeRange}</p>
+                            <p className="text-[16px] text-[#2B2B2B] tracking-[-1px] ">{reportData.date}</p>
+                            <p className="text-[16px] mt-2 text-[#2B2B2B] tracking-[-0.3px]">{reportData.timeRange}</p>
                         </div>
                     </div>
                 </section>
@@ -64,11 +64,11 @@ export default function ReportCard({ reportData }) {
                 <footer className="mt-2 relative">
                     <p className="text-sm font-light text-gray-600 mb-2">결과</p>
                     <div className="space-y-3 text-black text-sm">
-                        <div className="flex justify-between items-center border-b border-dashed font-semibold border-gray-400 pb-1"><span>점수 합계</span><span className="font-semibold">{reportData.results.totalScore}점</span></div>
-                        <div className="flex justify-between items-center border-b border-dashed font-semibold border-gray-400 pb-1"><span>획득 마일리지</span><span className="font-semibold">{reportData.results.mileage}</span></div>
-                        <div className="flex justify-between items-center font-semibold"><span>이번 달 까지</span><span className="font-semibold">{reportData.results.thisMonthTotal}</span></div>
+                        <div className="flex justify-between items-center border-b border-dashed font-[500] border-gray-400 pb-1"><span>점수 합계</span><span className="font-[500]">{reportData.results.totalScore}점</span></div>
+                        <div className="flex justify-between items-center border-b border-dashed font-[500] border-gray-400 pb-1"><span>획득 마일리지</span><span className="font-[500]">{reportData.results.mileage}</span></div>
+                        <div className="flex justify-between items-center font-[500]"><span>이번 달 까지</span><span className="font-[500]">{reportData.results.thisMonthTotal}</span></div>
                     </div>
-                    {reportData.status === "성공" && (<img src={StampSuccess} alt="탐험 성공" className="absolute -bottom-[94px] -right-4 w-28 h-28" />)}
+                    {reportData.status === "성공" && (<img src={StampSuccess} alt="탐험 성공" className="absolute -bottom-[92px] -right-4 w-28 h-28" />)}
                 </footer>
             </div>
         </div>
