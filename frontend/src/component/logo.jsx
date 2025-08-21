@@ -22,7 +22,6 @@ export default function Logo({
     );
 
     return (
-        // Added `fixed top-0` and `w-full`
         <header className={`fixed w-full z-20 transition-all duration-[250ms] overflow-hidden ${menuOpen ? "h-[215px]" : "h-[54px]"} backdrop-blur-[10px]`}>
             <div className="flex items-center h-[54px] w-full">
                 <Link to="/" className="ml-[13px] py-2">

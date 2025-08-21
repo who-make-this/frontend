@@ -15,7 +15,7 @@ export default function MyPage() {
         adventurer: "후메잌디스!!",
         place: "구미 새마을중앙시장",
         date: "16/08/2025",
-        mainType: "감성형", // '먹보형', '탐험형', '감성형'으로 변경하여 테스트 가능
+        mainType: "감성형",
         explorations: 16,
         coupons: 0,
         cleared: 42,
