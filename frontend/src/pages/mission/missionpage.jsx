@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import { createMission, getRandomMission } from "./api/createMission";
 
 export default function MissionPage() {
-  const token = "your-token-here";
   const marketId = 1;
 
   const navigate = useNavigate();

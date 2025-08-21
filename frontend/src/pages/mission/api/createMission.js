@@ -1,15 +1,15 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080/';
-const token = 'Bearer 69Gesh8VFOlo'; // 하드코딩 토큰으로 교체하세요
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const token = 'Bearer 69Gesh8VFOlo'; // 하드코딩, 토큰으로 교체하세요
 
 // 미션 시작
 export async function createMission(marketId) {
   try {
     const response = await axios.post(
       `${backendUrl}missions/start?marketId=${marketId}`,
-      {}, // body 필요 없으면 빈 객체
+      {},
       {
         headers: {
           Authorization: token,
