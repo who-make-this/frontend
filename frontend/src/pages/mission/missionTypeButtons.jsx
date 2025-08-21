@@ -29,12 +29,12 @@ export default function MissionTypeButtons({
         style={{ position: "relative", width: "100%" }}
       >
         {missionTypesWithCount.map((m, index) => {
-          const isSelected = selectedType === m.type;
+          const isSelected = selectedType === m.category;
 
           return (
             <button
               key={index}
-              onClick={() => !selectedType && setSelectedType(m.type)}
+              onClick={() => !selectedType && setSelectedType(m.category)}
               className="whitespace-nowrap transition-transform duration-500 ease-in-out transition-opacity duration-300"
               style={{
                 transform: isSelected
@@ -48,7 +48,7 @@ export default function MissionTypeButtons({
             >
               <MissionStatus
                 icon={m.icon}
-                label={m.type}
+                label={m.category}
                 value={m.count}
                 bgColor={m.bgColor}
               />

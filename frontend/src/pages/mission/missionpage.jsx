@@ -30,31 +30,33 @@ export default function MissionPage() {
   const [refreshHovered, setRefreshHovered] = useState(false);
 
   const missionTypes = [
-    { type: "감성형", count: 12, icon: typeMood, bgColor: "#A792B960" },
-    { type: "먹보형", count: 8, icon: typeEat, bgColor: "#D19B9860" },
-    { type: "모험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
+    { category: "감성형", count: 12, icon: typeMood, bgColor: "#A792B960" },
+    { category: "먹보형", count: 8, icon: typeEat, bgColor: "#D19B9860" },
+    { category: "모험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
   ];
 
   const collectedMissions = [
     {
-      type: "감성형",
+      category: "감성형",
       title: "벚꽃 사진",
-      number: "2",
+      missionId: "2",
       description: "봄에 찍은 사진",
     },
     {
-      type: "감성형",
+      category: "감성형",
       title: "노을 사진",
-      number: "2",
+      missionId: "2",
       description: "해질 무렵",
     },
     {
-      type: "먹보형",
+      category: "먹보형",
       title: "햄버거 먹기",
-      number: "2",
+      missionId: "2",
       description: "세트 메뉴",
     },
   ];
+
+  // 초기 랜덤 미션 불러오기
   useEffect(() => {
     (async () => {
       try {
@@ -66,7 +68,7 @@ export default function MissionPage() {
           category: "감성형",
           missionId: "1",
           title: "테스트 미션",
-          content: "테스트 미션 설명입니다",
+          description: "테스트 미션 설명입니다",
         });
       }
     })();
@@ -89,9 +91,10 @@ export default function MissionPage() {
     setCannotExitVisible(false);
   };
 
+  // type → category로 변경
   const missionTypesWithCount = missionTypes.map((m) => ({
     ...m,
-    count: collectedMissions.filter((cm) => cm.type === m.type).length,
+    count: collectedMissions.filter((cm) => cm.category === m.category).length,
   }));
 
   const handleRefreshClick = async () => {
@@ -115,18 +118,16 @@ export default function MissionPage() {
   }, [popupVisible, cannotExitVisible]);
 
   const selectedTypeColor = selectedType
-    ? missionTypes
-        .find((type) => type.type === selectedType)
-        ?.bgColor.slice(0, 7)
+    ? missionTypes.find((category) => category.category === selectedType)?.bgColor.slice(0, 7)
     : null;
 
   const gradientColor = selectedTypeColor
     ? `${selectedTypeColor}60`
     : "#2B2B2B80";
 
-  // 선택된 타입에 해당하는 완료된 미션 목록
+  // 선택된 category에 해당하는 완료된 미션 목록
   const completedMissionsOfType = selectedType
-    ? collectedMissions.filter((m) => m.type === selectedType)
+    ? collectedMissions.filter((m) => m.category === selectedType)
     : [];
 
   return (
