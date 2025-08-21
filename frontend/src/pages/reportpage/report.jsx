@@ -6,25 +6,34 @@ import ReportbgImg from "../../assets/reportbgimg.svg?react";
 import Logo from "../../component/Logo";
 import ReportContainer from '../../component/ReportContainer';
 import { reportsData as mockReportsData } from "../../data/reports";
-
 import rightArrowIcon from '../../assets/circle_arrow_right.svg';
 import leftArrowIcon from '../../assets/circle_arrow_left.svg';
+
+// --- 1. 로딩 스피너 컴포넌트 수정 ---
+const LoadingSpinner = () => (
+    // 반투명 블러 배경
+    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
+        {/* 커지면서 회전하는 점 */}
+        <div className="w-12 h-12 bg-green-400 rounded-full animate-grow-rotate"></div>
+        <p className="mt-8 text-white text-lg font-semibold">탐험 일지 불러 오는 중...</p>
+    </div>
+);
+
 
 export default function ReportPage() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const swiperRef = useRef(null);
-
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // 로딩 시간을 2초로 늘려서 애니메이션을 확인하기 쉽게 함
+                await new Promise(resolve => setTimeout(resolve, 2000));
                 setReports(mockReportsData);
-
-                if (!mockReportsData || mockReportsData.length <= 1) {
+                if (mockReportsData && mockReportsData.length <= 1) {
                     setIsEnd(true);
                 }
             } catch (error) {
@@ -41,13 +50,12 @@ export default function ReportPage() {
         setIsEnd(swiper.isEnd);
     };
 
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
-    }
-
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-[375px] h-[812px] bg-white shadow-sm relative overflow-hidden">
+                {/* --- 2. 로딩 중일 때 스피너를 오버레이로 렌더링 --- */}
+                {loading && <LoadingSpinner />}
+
                 <ReportbgImg 
                     className="absolute top-0 left-0 w-full h-full"
                     preserveAspectRatio="none"
@@ -59,8 +67,7 @@ export default function ReportPage() {
                 <Logo textColor="text-white" iconColor="white" />
                 
                 <div className="absolute top-[449px] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[650px] z-10">
-                    
-                    {reports.length > 0 ? (
+                    {!loading && reports.length > 0 ? (
                         <>
                             <Swiper
                                 onSwiper={(swiper) => { swiperRef.current = swiper; }}
@@ -97,11 +104,13 @@ export default function ReportPage() {
                             )}
                         </>
                     ) : (
-                        <div className="flex justify-center items-center -mt-5 h-full">
-                            <p className="text-white text-lg font-[400]">
-                                아직 기록된 일지가 없어요...
-                            </p>
-                        </div>
+                        !loading && (
+                            <div className="flex justify-center items-center h-full">
+                                <p className="text-white text-lg font-semibold bg-black/30 p-4 rounded-lg">
+                                    아직 기록된 일지가 없어요...
+                                </p>
+                            </div>
+                        )
                     )}
                 </div>
             </div>
