@@ -12,8 +12,12 @@ import vectorCamera from "../../assets/vectorCamera.svg";
 import refresh from "../../assets/iconoir_refresh.svg";
 import refresh_black from "../../assets/iconoir_refresh_black.svg";
 import { useNavigate } from "react-router-dom";
+import { createMission, getRandomMission } from "./api/createMission";
 
 export default function MissionPage() {
+  const token = "your-token-here";
+  const marketId = 1;
+
   const navigate = useNavigate();
 
   const [popupVisible, setPopupVisible] = useState(false);
@@ -28,22 +32,7 @@ export default function MissionPage() {
   const missionTypes = [
     { type: "감성형", count: 12, icon: typeMood, bgColor: "#A792B960" },
     { type: "먹보형", count: 8, icon: typeEat, bgColor: "#D19B9860" },
-    { type: "탐험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
-  ];
-
-  const currentMissions = [
-    {
-      type: "감성형",
-      number: 5,
-      title: "하늘 사진 찍기",
-      description: "구름 포함",
-    },
-    {
-      type: "먹보형",
-      number: 1,
-      title: "라면 먹기",
-      description: "편의점에서",
-    },
+    { type: "모험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
   ];
 
   const collectedMissions = [
@@ -66,6 +55,22 @@ export default function MissionPage() {
       description: "세트 메뉴",
     },
   ];
+  useEffect(() => {
+    (async () => {
+      try {
+        const mission = await getRandomMission();
+        setRandomMission(mission);
+      } catch (err) {
+        console.error("초기 랜덤 미션 불러오기 실패:", err);
+        setRandomMission({
+          category: "감성형",
+          missionId: "1",
+          title: "테스트 미션",
+          content: "테스트 미션 설명입니다",
+        });
+      }
+    })();
+  }, []);
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -89,11 +94,16 @@ export default function MissionPage() {
     count: collectedMissions.filter((cm) => cm.type === m.type).length,
   }));
 
-  const handleRefreshClick = () => {
+  const handleRefreshClick = async () => {
     setRefreshClicked(true);
-    const randomIndex = Math.floor(Math.random() * currentMissions.length);
-    setRandomMission(currentMissions[randomIndex]);
-    setTimeout(() => setRefreshClicked(false), 1000);
+    try {
+      const mission = await getRandomMission();
+      setRandomMission(mission);
+    } catch (err) {
+      console.error("랜덤 미션 불러오기 실패:", err);
+    } finally {
+      setTimeout(() => setRefreshClicked(false), 1000);
+    }
   };
 
   useEffect(() => {
@@ -103,11 +113,6 @@ export default function MissionPage() {
       document.body.style.overflow = "";
     };
   }, [popupVisible, cannotExitVisible]);
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * currentMissions.length);
-    setRandomMission(currentMissions[randomIndex]);
-  }, []);
 
   const selectedTypeColor = selectedType
     ? missionTypes

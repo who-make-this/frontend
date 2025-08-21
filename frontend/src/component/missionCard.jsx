@@ -4,7 +4,7 @@ import eatImg from "../assets/eat.svg";
 import moodImg from "../assets/mood.svg";
 import exploreImg from "../assets/explore.svg";
 
-export default function MissionCard({ type, number, title, description }) {
+export default function MissionCard({ category, missionId, title, content }) {
   const [clicked, setClicked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
@@ -52,14 +52,14 @@ export default function MissionCard({ type, number, title, description }) {
       colors: ["#9A8C4F", "#A792B9"],
       image: moodImg,
     },
-    탐험형: {
+    모험형: {
       colors: ["#9A8C4F", "#889F69"],
       image: exploreImg,
     },
   };
 
   // 잘못된 타입 처리 기본값 지정
-  const { colors, image } = typeStyles[type] || typeStyles["먹보형"];
+  const { colors, image } = typeStyles[category] || typeStyles["먹보형"];
 
   return (
     <div
@@ -88,16 +88,16 @@ export default function MissionCard({ type, number, title, description }) {
             userSelect: "none",
           }}
         >
-          {type}
+          {category}
         </div>
-        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{number}</div>
+        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{missionId}</div>
       </div>
 
       {/* 타입 이미지 */}
       <div className={`flex justify-center ${paddingTop}`}>
         <img
           src={image}
-          alt={`${type} 이미지`}
+          alt={`${category} 이미지`}
           draggable={false}
           style={{
             width: fontSize * 25,
@@ -120,7 +120,7 @@ export default function MissionCard({ type, number, title, description }) {
           className="font-medium text-[#2B2B2B]"
           style={{ fontSize: `${fontSize * 0.66}px` }}
         >
-          {description}
+          {content}
         </div>
       </div>
     </div>
