@@ -1,13 +1,11 @@
 import React from 'react';
 import ReportCardFrame from '../assets/reportpage.svg';
-import ReportGrid from '../assets/reportGrid.svg';
 
 export default function DiaryView({ diaryData }) {
     if (!diaryData || !diaryData.journalContent) {
         return (
             <div className="w-[349px] h-[542px] relative">
                 <img src={ReportCardFrame} alt="리포트 배경" className="absolute inset-0 w-full h-full z-10" />
-                <img src={ReportGrid} alt="리포트 그리드" className="absolute inset-0 w-full h-full z-20" />
                 <div className="relative z-30 p-6 flex justify-center items-center h-full">
                     <p className="text-center bg-white/50 p-4 rounded-md">작성된 일기가 없습니다.</p>
                 </div>
