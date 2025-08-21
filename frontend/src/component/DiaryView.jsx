@@ -21,7 +21,7 @@ export default function DiaryView({ diaryData }) {
         <div className="w-[349px] h-[542px] relative">
             <img src={ReportCardFrame} alt="리포트 배경" className="absolute inset-0 w-full h-full z-10" />
             <div className="relative z-30 p-8 flex flex-col h-full">
-                <h2 className="text-[17px] font-bold text-gray-800  mt-5 tracking-[-0.025em]"style={{ fontFamily: '"Noto Serif KR", serif' }} >{title}</h2>
+                <h2 className="text-[18px] font-[600] text-[#2B2B2B] mt-5 tracking-[-0.025em]"style={{ fontFamily: '"Noto Serif KR", serif' }} >{title}</h2>
                 <p className=" text-[12px] font-extralight leading-[140%] tracking-[-0.025em] text-[#2B2B2BCC] mt-1"style={{ fontFamily: '"Noto Serif KR", serif' }}>
                     {diaryData.explorationDate}
                 </p>
@@ -32,7 +32,7 @@ export default function DiaryView({ diaryData }) {
                     onError={(e) => { e.target.onerror = null; e.target.src=tempImageUrl; }}
                 />
                 <p 
-                  className="text-gray-900 text-[15px] mt-5 leading-relaxed flex-grow overflow-y-auto pr-2"style={{ fontFamily: '"Noto Serif KR", serif' }}
+                  className="text-[#2B2B2B] text-[15px] mt-5 font-[400] leading-relaxed flex-grow overflow-y-auto pr-2"style={{ fontFamily: '"Noto Serif KR", serif' }}
                 >
                     {content}
                 </p>
