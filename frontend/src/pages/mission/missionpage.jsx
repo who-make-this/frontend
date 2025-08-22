@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MainPageImg from "../../assets/mainPage.svg";
 import Logo from "../../component/Logo";
 import MissionCard from "../../component/missionCard";
@@ -12,18 +12,21 @@ import vectorCamera from "../../assets/vectorCamera.svg";
 import refresh from "../../assets/iconoir_refresh.svg";
 import refresh_black from "../../assets/iconoir_refresh_black.svg";
 import { useNavigate } from "react-router-dom";
-import { createMission, getRandomMission } from "./api/createMission";
+import { getRandomMission, createMission, getCompletedMissions } from "./api/MissionApi";
 
 export default function MissionPage() {
   const marketId = 1;
 
   const navigate = useNavigate();
 
+  const [selectedType, setSelectedType] = useState(null);
   const [popupVisible, setPopupVisible] = useState(false);
   const [popupActive, setPopupActive] = useState(false);
-  const [selectedType, setSelectedType] = useState(null);
-  const [randomMission, setRandomMission] = useState(null);
   const [cannotExitVisible, setCannotExitVisible] = useState(false);
+
+  const [randomMission, setRandomMission] = useState(null);
+  const [collectedMissions, setCollectedMissions] = useState([]);
+  const hasFetched = useRef(false);
 
   const [refreshClicked, setRefreshClicked] = useState(false);
   const [refreshHovered, setRefreshHovered] = useState(false);
@@ -34,35 +37,20 @@ export default function MissionPage() {
     { category: "모험형", count: 5, icon: typeTravel, bgColor: "#889F6960" },
   ];
 
-  const collectedMissions = [
-    {
-      category: "감성형",
-      title: "벚꽃 사진",
-      missionId: "2",
-      description: "봄에 찍은 사진",
-    },
-    {
-      category: "감성형",
-      title: "노을 사진",
-      missionId: "2",
-      description: "해질 무렵",
-    },
-    {
-      category: "먹보형",
-      title: "햄버거 먹기",
-      missionId: "2",
-      description: "세트 메뉴",
-    },
-  ];
-
   // 초기 랜덤 미션 불러오기
   useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     (async () => {
       try {
-        const mission = await getRandomMission();
+        await createMission(marketId);
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        const mission = await getRandomMission(marketId);
         setRandomMission(mission);
       } catch (err) {
-        console.error("초기 랜덤 미션 불러오기 실패:", err);
+        console.error("초기 미션 생성 또는 불러오기 실패:", err);
         setRandomMission({
           category: "감성형",
           missionId: "1",
@@ -72,6 +60,23 @@ export default function MissionPage() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+  const fetchCompletedMissions = async () => {
+    try {
+      const allCompleted = await Promise.all(
+        missionTypes.map((type) => getCompletedMissions(type.category))
+      );
+
+      const merged = allCompleted.flat();
+      setCollectedMissions(merged);
+    } catch (error) {
+      console.error("완료된 미션 불러오기 실패:", error);
+    }
+  };
+
+  fetchCompletedMissions();
+}, []);
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -90,7 +95,6 @@ export default function MissionPage() {
     setCannotExitVisible(false);
   };
 
-  // type → category로 변경
   const missionTypesWithCount = missionTypes.map((m) => ({
     ...m,
     count: collectedMissions.filter((cm) => cm.category === m.category).length,
@@ -99,7 +103,7 @@ export default function MissionPage() {
   const handleRefreshClick = async () => {
     setRefreshClicked(true);
     try {
-      const mission = await getRandomMission();
+      const mission = await getRandomMission(marketId);
       setRandomMission(mission);
     } catch (err) {
       console.error("랜덤 미션 불러오기 실패:", err);
@@ -117,7 +121,9 @@ export default function MissionPage() {
   }, [popupVisible, cannotExitVisible]);
 
   const selectedTypeColor = selectedType
-    ? missionTypes.find((category) => category.category === selectedType)?.bgColor.slice(0, 7)
+    ? missionTypes
+        .find((category) => category.category === selectedType)
+        ?.bgColor.slice(0, 7)
     : null;
 
   const gradientColor = selectedTypeColor

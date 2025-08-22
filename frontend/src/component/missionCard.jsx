@@ -4,13 +4,13 @@ import eatImg from "../assets/eat.svg";
 import moodImg from "../assets/mood.svg";
 import exploreImg from "../assets/explore.svg";
 
-export default function MissionCard({ category, missionId, title, content }) {
+export default function MissionCard({ category, id, missionTitle, content }) {
   const [clicked, setClicked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef(null);
 
   const [fontSize, setFontSize] = useState(24);
-  const [cardHeight, setCardHeight] = useState(464);
+  const [cardHeight, setCardHeight] = useState(480);
   const [paddingTop, setPaddingTop] = useState("pt-12");
   const [borderRadius, setBorderRadius] = useState("24px");
   const [padding, setpadding] = useState("100");
@@ -20,12 +20,12 @@ export default function MissionCard({ category, missionId, title, content }) {
       if (!cardRef.current) return;
       const width = cardRef.current.offsetWidth;
 
-      // 폰트 크기: 너비 / 10, 12 ~ 28 제한
-      const newFontSize = Math.min(Math.max(width / 8, 10), 28);
+      // 폰트 크기: 너비 / 10, 12 ~ 24 제한
+      const newFontSize = Math.min(Math.max(width / 8, 10), 24);
       setFontSize(newFontSize);
 
       // 카드 높이: 원비율(464/306) 유지하며 조정
-      const newHeight = (464 / 306) * width;
+      const newHeight = (480 / 306) * width;
       setCardHeight(newHeight);
 
       // padding top
@@ -90,7 +90,7 @@ export default function MissionCard({ category, missionId, title, content }) {
         >
           {category}
         </div>
-        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{missionId}</div>
+        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{id}</div>
       </div>
 
       {/* 타입 이미지 */}
@@ -114,7 +114,7 @@ export default function MissionCard({ category, missionId, title, content }) {
         style={{ padding: `${padding * 1}px ${padding * 1.5}px` }}
       >
         <div className="font-extrabold" style={{ fontSize: `${fontSize}px` }}>
-          {title}
+          {missionTitle}
         </div>
         <div
           className="font-medium text-[#2B2B2B]"
