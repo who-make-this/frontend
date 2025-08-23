@@ -9,7 +9,7 @@ import MissionPage from "./pages/mission/missionpage";
 import MyPage from "./pages/mypage/mypage";
 import Secretpage from "./pages/secretstory/secretpage";
 import ReportPage from "./pages/reportpage/report";
-
+import ReportEntryPage from "./pages/reportentrypage/reportentrypage";
 
 const LoginFailedScreen = ({ error }) => (
     <div className="flex flex-col items-center justify-center w-full h-full bg-red-100 text-red-700">
@@ -79,6 +79,7 @@ function App() {
                     <Router>
                         <div className="flex-1 flex items-center justify-center">
                             <Routes>
+                                <Route path="/reportentry" element={<ReportEntryPage />} />
                                 <Route path="/" element={<MainPage />} />
                                 <Route path="/mission" element={<MissionPage />} />
                                 <Route path="/mypage" element={<MyPage />} />

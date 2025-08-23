@@ -69,7 +69,7 @@ export default function Secretpage() {
                     id: index + 1,
                     unlockRequirement: storyFromApi.requiredMissionCount,
                     title: storyFromApi.data ? storyFromApi.data.title : "???",
-                    content: storyFromApi.data ? storyFromApi.data.content.replace(/<br \/>/g, '\n') : "아직 잠겨있는 이야기입니다.",
+                    content: storyFromApi.data ? storyFromApi.data.content : "아직 잠겨있는 이야기입니다.",
                     image: localImageMap[storyFromApi.requiredMissionCount] || SecretStorybg1,
                 }));
 

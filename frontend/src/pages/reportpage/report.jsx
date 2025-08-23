@@ -76,6 +76,7 @@ export default function ReportPage() {
                             thisMonthTotal: `${report.remainingMonthlyMileage}M`,
                         },
                         status: "성공",
+                        imageUrl: report.mainImageUrl || "",
                         diary: {
                             explorationDate: formatDiaryDate(report.explorationDate),
                             journalContent: report.journalContent,
@@ -128,12 +129,12 @@ export default function ReportPage() {
                                 ))}
                             </Swiper>
                             {!isBeginning && (
-                                <button onClick={() => swiperRef.current?.slidePrev()} className="absolute top-1/2 left-4 -translate-y-[120%] z-20 transition-opacity" aria-label="이전 슬라이드">
+                                <button onClick={() => swiperRef.current?.slidePrev()} className="absolute top-74 left-4 -translate-y-[120%] z-20 transition-opacity" aria-label="이전 슬라이드">
                                     <img src={leftArrowIcon} alt="이전" className="w-10 h-10" />
                                 </button>
                             )}
                             {!isEnd && (
-                                <button onClick={() => swiperRef.current?.slideNext()} className="absolute top-1/2 right-4 -translate-y-[120%] z-20 transition-opacity" aria-label="다음 슬라이드">
+                                <button onClick={() => swiperRef.current?.slideNext()} className="absolute top-74 right-4 -translate-y-[120%] z-20 transition-opacity" aria-label="다음 슬라이드">
                                     <img src={rightArrowIcon} alt="다음" className="w-10 h-10" />
                                 </button>
                             )}
