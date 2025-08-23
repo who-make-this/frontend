@@ -19,9 +19,6 @@ export default function DiaryView({ diaryData }) {
     const title = contentLines.length > 0 ? contentLines.shift().replace('제목: ', '') : '';
     const content = contentLines.join('\n').replace('내용:', '').trim();
 
-    // --- ⬇️ 이 부분을 수정했습니다 ⬇️ ---
-    // diaryData.imageUrl이 유효한 값일 때만 그 값을 사용하고, 아닐 경우 tempImageUrl을 사용합니다.
-    const imageUrlToShow = diaryData.imageUrl || tempImageUrl;
 
     return (
         <div className="w-[349px] h-[542px] relative">
@@ -32,10 +29,9 @@ export default function DiaryView({ diaryData }) {
                     {diaryData.explorationDate}
                 </p>
                 <img
-                    src={imageUrlToShow} // ⬅️ 수정된 변수를 사용
+                    src={diaryData.imageUrl}
                     alt="탐험 일기 사진"
                     className="w-[289px] h-[150px] object-cover rounded-md mt-4 shadow-lg"
-                    onError={(e) => { e.target.onerror = null; e.target.src=tempImageUrl; }}
                 />
                 <p 
                     className="text-[#2B2B2B] text-[15px] mt-5 font-[400] leading-relaxed flex-grow overflow-y-auto pr-2" style={{ fontFamily: '"Noto Serif KR", serif' }}

@@ -20,7 +20,7 @@ export default function SecretStory({ story, clearedMissions }) {
                 </div>
                 <div className="p-3 flex-grow bg-[#FFFAFA] -mt-1.5">
                     <div>
-                        <h1 className="text-[#2B2B2B] text-xl font-bold mb-1">{story.title}</h1>
+                        <h1 className="text-[#2B2B2B] text-xl font-bold mb-1 mt-1">{story.title}</h1>
                         <p 
                             className="text-[#2B2B2BCC] text-sm font-[400] tracking-[-0.3px] leading-[135%]"
                             dangerouslySetInnerHTML={{ __html: story.content }}
