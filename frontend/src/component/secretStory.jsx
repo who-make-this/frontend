@@ -2,10 +2,13 @@ import React from 'react';
 import LockIcon from '../assets/lockicon.svg';
 import SecretStorybg1 from "../assets/secretmarketimg1.svg";
 
+// storyId 대신 story 객체 전체를 props로 받습니다.
 export default function SecretStory({ story, clearedMissions }) {
     if (!story) return null;
 
     const isLocked = clearedMissions < story.unlockRequirement;
+    
+    // 잠겨있거나, API에서 이미지를 주지 않았을 경우(!story.image) 기본 이미지를 사용합니다.
     const backgroundImage = isLocked || !story.image ? SecretStorybg1 : story.image;
 
     return (
@@ -20,7 +23,7 @@ export default function SecretStory({ story, clearedMissions }) {
                 </div>
                 <div className="p-3 flex-grow bg-[#FFFAFA] -mt-1.5">
                     <div>
-                        <h1 className="text-[#2B2B2B] text-xl font-bold mb-1">{story.title}</h1>
+                        <h1 className="text-[#2B2B2B] text-xl font-bold mb-1 mt-1">{story.title}</h1>
                         <p 
                             className="text-[#2B2B2BCC] text-sm font-[400] tracking-[-0.3px] leading-[135%]"
                             dangerouslySetInnerHTML={{ __html: story.content }}

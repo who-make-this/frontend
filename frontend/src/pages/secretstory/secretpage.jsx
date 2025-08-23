@@ -13,25 +13,10 @@ import MissionProgress from '../../component/missionProgress';
 import SecretStory from '../../component/secretStory';
 import CustomPagination from '../../component/CustomPagination';
 
-// 1. 사용할 로컬 이미지를 모두 import 합니다.
-import SecretStorybg1 from "../../assets/secretmarketimg1.svg";
-import SecretStorybg2 from "../../assets/secretmarketimg2.svg";
-import SecretStorybg3 from "../../assets/secretmarketimg3.svg";
-import SecretStorybg4 from "../../assets/secretmarketimg4.svg";
-import SecretStorybg5 from "../../assets/secretmarketimg5.svg";
-
-// 2. unlockRequirement를 key로, 이미지를 value로 하는 이미지 맵을 만듭니다.
-const localImageMap = {
-    1: SecretStorybg1,
-    3: SecretStorybg2,
-    5: SecretStorybg3,
-    10: SecretStorybg4,
-    15: SecretStorybg5,
-};
-
+// --- Loading & Error Components ---
 const LoadingScreen = () => (
-    <div className="flex items-center mt-33 h-full">
-        <div className="w-12 h-12 border-3 border-dashed rounded-full animate-spin border-white"></div>
+    <div className="flex items-center justify-center h-full">
+        <div className="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-white"></div>
     </div>
 );
 const ErrorScreen = ({ message }) => (
@@ -41,16 +26,20 @@ const ErrorScreen = ({ message }) => (
 );
 
 
-export default function Secretpage() {
+// --- 1. props로 missionsCompleted를 받도록 수정 ---
+export default function Secretpage({ missionsCompleted }) {
+    // --- State Management ---
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [missionsCompleted, setMissionsCompleted] = useState(3);
+    // --- 2. 아래의 중복 선언을 삭제합니다 ---
+    // const [missionsCompleted, setMissionsCompleted] = useState(3); 
     
     const [swiperInstance, setSwiperInstance] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
+    // --- Data Fetching ---
     useEffect(() => {
         const fetchSecretStories = async () => {
             try {
@@ -70,7 +59,7 @@ export default function Secretpage() {
                     unlockRequirement: storyFromApi.requiredMissionCount,
                     title: storyFromApi.data ? storyFromApi.data.title : "???",
                     content: storyFromApi.data ? storyFromApi.data.content : "아직 잠겨있는 이야기입니다.",
-                    image: localImageMap[storyFromApi.requiredMissionCount] || SecretStorybg1,
+                    image: storyFromApi.data ? storyFromApi.data.imageUrl : null,
                 }));
 
                 setStories(transformedData);
@@ -87,7 +76,7 @@ export default function Secretpage() {
         fetchSecretStories();
     }, []);
 
- 
+    // --- Swiper Logic ---
     const loopedStories = stories.length > 0 ? [...stories, stories[0]] : [];
     const handleSlideChange = (swiper) => {
         if (isAnimating) return;

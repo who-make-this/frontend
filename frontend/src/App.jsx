@@ -23,6 +23,7 @@ function App() {
     const baseWidth = 375;
     const baseHeight = 812;
     const [scale, setScale] = useState(1);
+    const [missionsCompleted, setMissionsCompleted] = useState(0);
 
     useEffect(() => {
         const handleResize = () => {
@@ -52,6 +53,13 @@ function App() {
                 const { accessToken } = response.data;
                 Cookies.set("token", accessToken, { expires: 7 });
                 setIsLoggedIn(true);
+
+                const token = Cookies.get('token');
+                const responseMission = await axios.get(`${baseUrl}/users/me`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                 setMissionsCompleted(responseMission.data.completedMissionCount);
             } catch (error) {
                 console.error("🚨 Auto-login error:", error);
                 const errorMessage = error.response?.data || "서버에 연결할 수 없습니다.";
@@ -83,7 +91,7 @@ function App() {
                                 <Route path="/" element={<MainPage />} />
                                 <Route path="/mission" element={<MissionPage />} />
                                 <Route path="/mypage" element={<MyPage />} />
-                                <Route path="/secret" element={<Secretpage />} />
+                                <Route path="/secret" element={<Secretpage missionsCompleted={missionsCompleted}/>} />
                                 <Route path="/report" element={<ReportPage />} />
                             </Routes>
                         </div>

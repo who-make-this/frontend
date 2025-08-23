@@ -147,7 +147,7 @@ export default function reportentrypage() {
             console.error("� 일지 생성 실패:", error);
             alert("일지 생성에 실패했습니다. 다시 시도해주세요."); // 사용자에게 에러 알림
         } finally {
-            setIsSubmitting(false); // 로딩 종료
+            setIsSubmitting(false); 
         }
     };
 
@@ -160,7 +160,6 @@ export default function reportentrypage() {
                     <Logo textColor="text-white" iconColor="white" />
                 </div>
 
-                {/* generatedReport가 있으면 확인 화면을, 없으면 입력 폼을 렌더링 */}
                 {generatedReport ? (
                     <div className="absolute inset-0 z-20 flex items-center justify-center p-4">
                         <ReportContainer report={generatedReport} />

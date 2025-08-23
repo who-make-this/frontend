@@ -76,10 +76,10 @@ export default function ReportPage() {
                             thisMonthTotal: `${report.remainingMonthlyMileage}M`,
                         },
                         status: "성공",
-                        imageUrl: report.mainImageUrl || "",
                         diary: {
                             explorationDate: formatDiaryDate(report.explorationDate),
                             journalContent: report.journalContent,
+                            imageUrl: report.mainImageUrl || ""
                         }
                     };
                 });

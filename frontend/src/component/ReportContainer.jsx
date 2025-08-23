@@ -12,16 +12,16 @@ export default function ReportContainer({ report }) {
         : "bg-white text-black"; 
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-10">
             {activeView === 'report' ? (
                 <ReportView reportData={report} />
             ) : (
                 <DiaryView diaryData={report.diary} />
             )}
-            <div className="mt-6 w-[349px]">
+            <div className="mt-[30px] w-[309px]">
                 <button 
                     onClick={() => setActiveView(activeView === 'report' ? 'diary' : 'report')}
-                    className={`w-full font-bold py-3 px-4 rounded-lg shadow-md transition-colors flex items-center justify-center gap-x-2 ${buttonClass}`}
+                    className={`w-full font-[600] py-3 text-[16px] px-4 rounded-lg shadow-md transition-colors flex items-center justify-center gap-x-2 ${buttonClass}`}
                 >
                     <img 
                         src={activeView === 'report' ? FlipWhite : FlipBlack} 
