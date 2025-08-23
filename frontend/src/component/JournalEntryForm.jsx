@@ -4,7 +4,8 @@ import CameraIcon from '../assets/Camera.svg?react';
 export default function JournalEntryForm({ 
     selectedImage, 
     onImageSelectClick, 
-    onSubmit 
+    onSubmit,
+    isSubmitting // 1. isSubmitting prop을 전달받습니다.
 }) {
     const isButtonEnabled = selectedImage !== null;
 
@@ -33,17 +34,19 @@ export default function JournalEntryForm({
                 </div>
             </main>
             <footer className="w-full flex justify-center mb-100">
-                 <button 
+               <button 
                     onClick={onSubmit}
-                    disabled={!isButtonEnabled}
+                    // 2. isSubmitting이 true일 때도 버튼을 비활성화합니다.
+                    disabled={!isButtonEnabled || isSubmitting}
                     className={`w-[121px] h-[53px] font-bold rounded-[25px] shadow-md transition-colors flex items-center justify-center 
                         ${isButtonEnabled 
-                            ? 'bg-white text-[#2B2B2B] ' 
+                            ? 'bg-white text-[#2B2B2B] transition-all duration-250 ease-in-out active:scale-x-[1.088] active:scale-y-[1.132] active:bg-[#A47764] active:text-white' 
                             : 'bg-[#FFFAFA4D] border-[0.7px] border-[#FFFAFA] text-[#2B2B2B4D] cursor-not-allowed'
-                        }`
+                        }
+                        ${isSubmitting ? 'opacity-50 cursor-wait' : ''}` // 전송 중일 때 시각적 피드백 추가
                     }
                 >
-                    기록하기
+                    {isSubmitting ? '생성 중...' : '기록하기'}
                 </button>
             </footer>
         </div>
