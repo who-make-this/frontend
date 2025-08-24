@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 // --- Asset Imports ---
 import ReportbgImg from "../../assets/reportbgimg.svg?react";
 import Logo from "../../component/Logo";
-import CameraIcon from '../../assets/Camera.svg?react';
+import CameraIcon from '../../assets/camera.svg?react';
 import ReportContainer from '../../component/ReportContainer';
 import JournalEntryForm from '../../component/JournalEntryForm';
 

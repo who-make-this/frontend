@@ -1,5 +1,5 @@
 import React from 'react';
-import CameraIcon from '../assets/Camera.svg?react';
+import CameraIcon from '../assets/camera.svg?react';
 
 export default function JournalEntryForm({ 
     selectedImage, 
