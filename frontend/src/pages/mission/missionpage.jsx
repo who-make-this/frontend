@@ -143,19 +143,19 @@ export default function MissionPage() {
       const file = fileInput.files[0];
       if (!file) return;
 
-      try {
-        setAuthInProgress(true);
+      setAuthInProgress(true);
 
+      try {
         console.log("[인증 시작] missionId:", randomMission.id);
-        // 여기서 userId는 토큰 기반 인증일 경우 서버에서 유저 식별, 클라이언트에서는 보통 안보이지만
-        // 테스트용으로 서버 응답 후 콘솔에서 확인 가능
+
+        // 서버로 인증 요청
         const updatedMission = await authenticateMission(
           randomMission.id,
           file
         );
-
         console.log("[인증 완료] mission data:", updatedMission);
 
+        // 상태 업데이트
         setRandomMission(updatedMission);
 
         const completed = await getCompletedMissions(updatedMission.category);
@@ -166,11 +166,25 @@ export default function MissionPage() {
           return [...filtered, ...completed];
         });
 
-        setAuthResult({ type: "success" });
+        // 서버에서 returned completed 값 확인 후 UI 처리
+        if (updatedMission.completed) {
+          setAuthResult({ type: "success" });
+          console.log("[미션 인증 성공]");
+        } else {
+          setAuthResult({
+            type: "error",
+            message: updatedMission.failureReason || "인증에 실패했습니다.",
+          });
+          console.log("[미션 인증 실패]", updatedMission.failureReason);
+        }
       } catch (err) {
-        console.error("미션 인증 실패:", err.response?.data || err.message);
+        console.error(
+          "미션 인증 요청 실패:",
+          err.response?.data || err.message
+        );
         const failureReason =
-          err.response?.data?.failureReason || "인증에 실패했습니다.";
+          err.response?.data?.failureReason ||
+          "인증 요청 중 오류가 발생했습니다.";
         setAuthResult({ type: "error", message: failureReason });
       } finally {
         setAuthInProgress(false);
