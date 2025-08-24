@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 export default function Logo({
     textColor = 'text-white',
     iconColor = 'white',
     isMissionActive
 }) {
+    const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const closeMenu = () => setMenuOpen(false);
     const menuIconSvg = (
