@@ -31,7 +31,7 @@ const handleCheckProfile = async () => {
   }
 };
 
-export default function MissionPage() {
+export default function MissionPage({ setIsMissionActive }) {
   const marketId = 1;
 
   const navigate = useNavigate();
@@ -407,10 +407,11 @@ export default function MissionPage() {
                     className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
                     onClick={async () => {
                       try {
+                        setIsMissionActive(false);
                         await endMission(marketId);
                         console.log("[탐험 종료] 완료, report 페이지로 이동");
                         closePopup();
-                        navigate("/report");
+                        navigate("/reportentry");
                       } catch (err) {
                         console.error("탐험 종료 실패:", err);
                         alert("탐험 종료에 실패했습니다.");

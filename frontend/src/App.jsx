@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import "./App.css";
@@ -24,6 +24,7 @@ function App() {
     const baseHeight = 812;
     const [scale, setScale] = useState(1);
     const [missionsCompleted, setMissionsCompleted] = useState(0);
+    const [isMissionActive, setIsMissionActive] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -71,35 +72,49 @@ function App() {
     }, []);
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard]">
-            <div
-                style={{
-                    transform: `scale(${scale})`,
-                    transformOrigin: "top center",
-                    width: "375px",
-                    height: "812px",
-                }}
-                className="bg-white shadow-sm flex flex-col"
-            >
-                {!isLoggedIn && !loginError}
-                {loginError && <LoginFailedScreen error={loginError} />}
-                {isLoggedIn && (
-                    <Router>
-                        <div className="flex-1 flex items-center justify-center">
-                            <Routes>
-                                <Route path="/reportentry" element={<ReportEntryPage />} />
-                                <Route path="/" element={<MainPage />} />
-                                <Route path="/mission" element={<MissionPage />} />
-                                <Route path="/mypage" element={<MyPage />} />
-                                <Route path="/secret" element={<Secretpage missionsCompleted={missionsCompleted}/>} />
-                                <Route path="/report" element={<ReportPage />} />
-                            </Routes>
-                        </div>
-                    </Router>
-                )}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard]">
+      <div
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+          width: "375px",
+          height: "812px",
+        }}
+        className="bg-white shadow-sm flex flex-col"
+      >
+        {!isLoggedIn && !loginError}
+        {loginError && <LoginFailedScreen error={loginError} />}
+        {isLoggedIn && (
+          <Router>
+            <div className="flex-1 flex items-center justify-center">
+              <Routes>
+                {/* 메인 페이지 접근 제한 */}
+                <Route
+                  path="/"
+                  element={
+                    isMissionActive ? <Navigate to="/mission" replace /> : <MainPage setIsMissionActive={setIsMissionActive} />
+                  }
+                />
+
+                {/* 미션 페이지 접근 제한 */}
+                <Route
+                  path="/mission"
+                  element={
+                    isMissionActive ? <MissionPage setIsMissionActive={setIsMissionActive}/> : <Navigate to="/" replace />
+                  }
+                />
+
+                <Route path="/reportentry" element={<ReportEntryPage />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/secret" element={<Secretpage missionsCompleted={missionsCompleted}/>} />
+                <Route path="/report" element={<ReportPage />} />
+              </Routes>
             </div>
-        </div>
-    );
+          </Router>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default App;

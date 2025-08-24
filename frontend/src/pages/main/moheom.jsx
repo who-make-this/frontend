@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Moheom() {
+export default function Moheom({setIsMissionActive}) {
+
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const startMission = () => {
+    setIsMissionActive(true);
     navigate("/mission");
   };
+
   return (
     <div className="relative w-[349px] h-[655px] mx-auto">
       <div className="absolute left-1/2 top-[356px] -translate-x-1/2 -translate-y-1/2 z-20 w-[349px] h-[72px] flex items-center justify-center">
@@ -21,7 +24,7 @@ export default function Moheom() {
       </div>
       <div className="absolute left-1/2 top-[485px] -translate-x-1/2 z-20 w-[125px] h-[53px] flex items-center justify-center">
         <button
-          onClick={handleClick}
+          onClick={startMission}
           className="bg-white rounded-[24px] text-black text-[18px] font-medium text-center w-full leading-[140%] tracking-[-1px] py-3 transition-all duration-250 ease-in-out active:scale-x-[1.088] active:scale-y-[1.132] active:bg-[#A47764] active:text-white"
         >
           탐험 시작
