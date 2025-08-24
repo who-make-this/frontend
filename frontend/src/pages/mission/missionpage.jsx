@@ -166,7 +166,6 @@ export default function MissionPage() {
           return [...filtered, ...completed];
         });
 
-        // 서버에서 returned completed 값 확인 후 UI 처리
         if (updatedMission.completed) {
           setAuthResult({ type: "success" });
           console.log("[미션 인증 성공]");
