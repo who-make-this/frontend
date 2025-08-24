@@ -83,7 +83,7 @@ const formatDiaryDate = (iso) => {
 
 
 
-export default function reportentrypage() {
+export default function reportentrypage({ setIsMissionActive }) {
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [journalText, setJournalText] = useState("");
@@ -142,6 +142,7 @@ export default function reportentrypage() {
             };
             
             setGeneratedReport(transformedData); // 변환된 데이터를 state에 저장
+            setIsMissionActive(false);
 
         } catch (error) {
             console.error("� 일지 생성 실패:", error);

@@ -31,7 +31,7 @@ const handleCheckProfile = async () => {
   }
 };
 
-export default function MissionPage({ setIsMissionActive }) {
+export default function MissionPage() {
   const marketId = 1;
 
   const navigate = useNavigate();
@@ -407,7 +407,6 @@ export default function MissionPage({ setIsMissionActive }) {
                     className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
                     onClick={async () => {
                       try {
-                        setIsMissionActive(false);
                         await endMission(marketId);
                         console.log("[탐험 종료] 완료, report 페이지로 이동");
                         closePopup();
