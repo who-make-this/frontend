@@ -4,9 +4,7 @@ import eatImg from "../assets/eat.svg";
 import moodImg from "../assets/mood.svg";
 import exploreImg from "../assets/explore.svg";
 
-export default function MissionCard({ category, id, missionTitle, content }) {
-  const [clicked, setClicked] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+export default function MissionCard({ category, missionNumbers, missionTitle, content }) {
   const cardRef = useRef(null);
 
   const [fontSize, setFontSize] = useState(24);
@@ -90,7 +88,7 @@ export default function MissionCard({ category, id, missionTitle, content }) {
         >
           {category}
         </div>
-        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{id}</div>
+        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{missionNumbers}</div>
       </div>
 
       {/* 타입 이미지 */}

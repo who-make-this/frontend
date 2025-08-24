@@ -11,8 +11,25 @@ import exit from "../../assets/exit.svg";
 import vectorCamera from "../../assets/vectorCamera.svg";
 import refresh from "../../assets/iconoir_refresh.svg";
 import refresh_black from "../../assets/iconoir_refresh_black.svg";
+import loading from "../../assets/loading.svg";
 import { useNavigate } from "react-router-dom";
-import { getRandomMission, createMission, getCompletedMissions } from "./api/MissionApi";
+import {
+  getRandomMission,
+  createMission,
+  getCompletedMissions,
+  authenticateMission,
+  endMission,
+  getUserProfile,
+} from "./api/MissionApi";
+
+const handleCheckProfile = async () => {
+  try {
+    const profile = await getUserProfile();
+    console.log("[탐험 종료 직전] 유저 프로필:", profile);
+  } catch (err) {
+    console.error("유저 프로필 가져오기 실패:", err);
+  }
+};
 
 export default function MissionPage() {
   const marketId = 1;
@@ -26,6 +43,8 @@ export default function MissionPage() {
 
   const [randomMission, setRandomMission] = useState(null);
   const [collectedMissions, setCollectedMissions] = useState([]);
+  const [authResult, setAuthResult] = useState(null);
+  const [authInProgress, setAuthInProgress] = useState(false); // 인증 중 상태
   const hasFetched = useRef(false);
 
   const [refreshClicked, setRefreshClicked] = useState(false);
@@ -53,7 +72,7 @@ export default function MissionPage() {
         console.error("초기 미션 생성 또는 불러오기 실패:", err);
         setRandomMission({
           category: "감성형",
-          missionId: "1",
+          missionNumbers: "1",
           title: "테스트 미션",
           description: "테스트 미션 설명입니다",
         });
@@ -62,21 +81,21 @@ export default function MissionPage() {
   }, []);
 
   useEffect(() => {
-  const fetchCompletedMissions = async () => {
-    try {
-      const allCompleted = await Promise.all(
-        missionTypes.map((type) => getCompletedMissions(type.category))
-      );
+    const fetchCompletedMissions = async () => {
+      try {
+        const allCompleted = await Promise.all(
+          missionTypes.map((type) => getCompletedMissions(type.category))
+        );
 
-      const merged = allCompleted.flat();
-      setCollectedMissions(merged);
-    } catch (error) {
-      console.error("완료된 미션 불러오기 실패:", error);
-    }
-  };
+        const merged = allCompleted.flat();
+        setCollectedMissions(merged);
+      } catch (error) {
+        console.error("완료된 미션 불러오기 실패:", error);
+      }
+    };
 
-  fetchCompletedMissions();
-}, []);
+    fetchCompletedMissions();
+  }, []);
 
   const openPopup = () => {
     setPopupVisible(true);
@@ -110,6 +129,53 @@ export default function MissionPage() {
     } finally {
       setTimeout(() => setRefreshClicked(false), 1000);
     }
+  };
+
+  const handleAuthenticateClick = async () => {
+    handleCheckProfile();
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.onchange = async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      try {
+        setAuthInProgress(true);
+
+        console.log("[인증 시작] missionId:", randomMission.id);
+        // 여기서 userId는 토큰 기반 인증일 경우 서버에서 유저 식별, 클라이언트에서는 보통 안보이지만
+        // 테스트용으로 서버 응답 후 콘솔에서 확인 가능
+        const updatedMission = await authenticateMission(
+          randomMission.id,
+          file
+        );
+
+        console.log("[인증 완료] mission data:", updatedMission);
+
+        setRandomMission(updatedMission);
+
+        const completed = await getCompletedMissions(updatedMission.category);
+        setCollectedMissions((prev) => {
+          const filtered = prev.filter(
+            (m) => m.category !== updatedMission.category
+          );
+          return [...filtered, ...completed];
+        });
+
+        setAuthResult({ type: "success" });
+      } catch (err) {
+        console.error("미션 인증 실패:", err.response?.data || err.message);
+        const failureReason =
+          err.response?.data?.failureReason || "인증에 실패했습니다.";
+        setAuthResult({ type: "error", message: failureReason });
+      } finally {
+        setAuthInProgress(false);
+      }
+    };
   };
 
   useEffect(() => {
@@ -197,8 +263,8 @@ export default function MissionPage() {
 
         {/* 기존 카드 영역 */}
         <div
-          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto max-h-[464px] max-w-[309px] ${
-            selectedType ? "top-[120px]" : "top-[160px]"
+          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto h-[464px] max-w-[309px] hide-scrollbar ${
+            selectedType ? "top-[120px] h-full" : "top-[160px] h-[464px]"
           }`}
         >
           {selectedType ? (
@@ -215,27 +281,100 @@ export default function MissionPage() {
         </div>
 
         {/* 하단 버튼 */}
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-50">
-          <button
-            onClick={openPopup}
-            className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
-          >
-            <img
-              src={exit}
-              className="w-[24px] h-[24px] object-contain"
-              alt="탐험 종료"
-            />
-            <div className="ps-2">탐험 종료</div>
-          </button>
-          <button className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out active:bg-[#A47764] active:text-white active:font-bold">
-            <img
-              src={vectorCamera}
-              className="w-[24px] h-[24px] object-contain"
-              alt="미션 인증"
-            />
-            <div className="ps-2">미션 인증</div>
-          </button>
+        <div>
+          {!selectedType ? (
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-50">
+              <button
+                onClick={openPopup}
+                className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
+              >
+                <img
+                  src={exit}
+                  className="w-[24px] h-[24px] object-contain"
+                  alt="탐험 종료"
+                />
+                <div className="ps-2">탐험 종료</div>
+              </button>
+              <button
+                onClick={handleAuthenticateClick}
+                className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out active:bg-[#A47764] active:text-white active:font-bold"
+              >
+                <img
+                  src={vectorCamera}
+                  className="w-[24px] h-[24px] object-contain"
+                  alt="미션 인증"
+                />
+                <div className="ps-2">미션 인증</div>
+              </button>
+            </div>
+          ) : null}
         </div>
+
+        {authInProgress && (
+          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
+            <img
+              src={loading}
+              alt="인증 중 로딩"
+              className="w-16 h-16 animate-spin mb-4"
+            />
+            <div className="text-white text-xl font-semibold">
+              이미지 검토 중...
+            </div>
+          </div>
+        )}
+
+        {/* 인증 결과 팝업 */}
+        {authResult && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/70">
+            <div className="w-[349px] h-auto bg-white rounded-3xl p-8 flex flex-col justify-between">
+              <div>
+                <div className="text-2xl font-medium">
+                  {authResult.type === "success"
+                    ? "미션 성공!"
+                    : "미션 실패..."}
+                </div>
+                <div className="mt-3 mb-6">
+                  {authResult.type === "success"
+                    ? "미션을 성공적으로 완료했어요! 계속 탐험하며 다음 미션에 도전해보세요."
+                    : authResult.message}
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                {/* 실패일 때만 취소 버튼 */}
+                {authResult.type === "error" && (
+                  <button
+                    onClick={() => setAuthResult(null)}
+                    className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
+                  >
+                    취소
+                  </button>
+                )}
+
+                {/* 오른쪽 버튼 */}
+                <button
+                  className={`py-3 rounded-full bg-[#9A8C4F] text-white ${
+                    authResult.type === "success" ? "w-[50%] ml-auto" : "flex-1"
+                  }`}
+                  onClick={async () => {
+                    if (authResult.type === "success") {
+                      // 다음 미션 불러오기
+                      const mission = await getRandomMission(marketId);
+                      setRandomMission(mission);
+                    } else if (authResult.type === "error") {
+                      handleAuthenticateClick();
+                    }
+                    setAuthResult(null); // 팝업 닫기
+                  }}
+                >
+                  {authResult.type === "success"
+                    ? "다음 미션으로"
+                    : "다시 인증하기"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 탐험 종료 팝업 */}
         {popupVisible && (
@@ -266,9 +405,16 @@ export default function MissionPage() {
                 <div className="flex gap-3">
                   <button
                     className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
-                    onClick={() => {
-                      closePopup();
-                      navigate("/report");
+                    onClick={async () => {
+                      try {
+                        await endMission(marketId);
+                        console.log("[탐험 종료] 완료, report 페이지로 이동");
+                        closePopup();
+                        navigate("/report");
+                      } catch (err) {
+                        console.error("탐험 종료 실패:", err);
+                        alert("탐험 종료에 실패했습니다.");
+                      }
                     }}
                   >
                     그만하기
