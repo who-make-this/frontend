@@ -19,17 +19,8 @@ import {
   getCompletedMissions,
   authenticateMission,
   endMission,
-  getUserProfile,
 } from "./api/MissionApi";
 
-const handleCheckProfile = async () => {
-  try {
-    const profile = await getUserProfile();
-    console.log("[탐험 종료 직전] 유저 프로필:", profile);
-  } catch (err) {
-    console.error("유저 프로필 가져오기 실패:", err);
-  }
-};
 
 export default function MissionPage() {
   const marketId = 1;
@@ -132,8 +123,6 @@ export default function MissionPage() {
   };
 
   const handleAuthenticateClick = async () => {
-    handleCheckProfile();
-
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
@@ -146,14 +135,12 @@ export default function MissionPage() {
       setAuthInProgress(true);
 
       try {
-        console.log("[인증 시작] missionId:", randomMission.id);
 
         // 서버로 인증 요청
         const updatedMission = await authenticateMission(
           randomMission.id,
           file
         );
-        console.log("[인증 완료] mission data:", updatedMission);
 
         // 상태 업데이트
         setRandomMission(updatedMission);
@@ -168,13 +155,11 @@ export default function MissionPage() {
 
         if (updatedMission.completed) {
           setAuthResult({ type: "success" });
-          console.log("[미션 인증 성공]");
         } else {
           setAuthResult({
             type: "error",
             message: updatedMission.failureReason || "인증에 실패했습니다.",
           });
-          console.log("[미션 인증 실패]", updatedMission.failureReason);
         }
       } catch (err) {
         console.error(
@@ -421,7 +406,6 @@ export default function MissionPage() {
                     onClick={async () => {
                       try {
                         await endMission(marketId);
-                        console.log("[탐험 종료] 완료, report 페이지로 이동");
                         closePopup();
                         navigate("/reportentry");
                       } catch (err) {

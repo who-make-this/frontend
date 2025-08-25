@@ -1,12 +1,71 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from 'js-cookie';
 
-export default function Moheom({setIsMissionActive}) {
+const BACK_URL = import.meta.env.VITE_BACKEND_URL;
 
+export const checkMyReports = async () => {
+  try {
+    const token = Cookies.get("token");
+    if (!token) throw new Error("로그인이 필요합니다.");
+
+    const response = await axios.get(`${BACK_URL}/reports/my-reports`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("리포트 불러오기 실패:", error);
+    throw error;
+  }
+};
+
+export default function Moheom({ setIsMissionActive }) {
+  const [isMissionLocked, setIsMissionLocked] = useState(false);
+  const [reports, setReports] = useState([]);
   const navigate = useNavigate();
 
+
+  useEffect(() => {
+  const checkMissionStatus = async () => {
+    try {
+      const data = await checkMyReports();
+      setReports(data);
+
+      if (data.length > 0) {
+        // 가장 최근 리포트 (내림차순 정렬 가정)
+        const latestReport = data[0];
+        const endTime = new Date(latestReport.endTime);
+        const today = new Date();
+
+        // endTime과 today를 날짜만 비교
+        const isSameDay =
+          endTime.getFullYear() === today.getFullYear() &&
+          endTime.getMonth() === today.getMonth() &&
+          endTime.getDate() === today.getDate();
+
+        if (isSameDay) {
+          setIsMissionLocked(true);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load reports:", error);
+    }
+  };
+
+  checkMissionStatus();
+}, []);
+
   const startMission = () => {
-    setIsMissionActive(true);
-    navigate("/mission");
+    // if (isMissionLocked) {
+    //   alert("오늘은 이미 탐험을 완료했어요. 내일 다시 와주세요.");
+    // } else {
+      setIsMissionActive(true);
+      navigate("/mission");
+    // }
   };
 
   return (
