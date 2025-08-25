@@ -406,19 +406,11 @@ export default function MissionPage() {
                       const completedImages = await getCompletedImages();
                       console.log(completedImages);
                       try {
-                        if (
-                          !Array.isArray(completedImages) ||
-                          completedImages.length === 0
-                        ) {
-                          setCannotExitVisible(true);
-                          return;
-                        }
                         await endMission(marketId);
                         closePopup();
                         navigate("/reportentry");
                       } catch (err) {
-                        console.error("탐험 종료 실패:", err);
-                        alert("탐험 종료에 실패했습니다.");
+                        setCannotExitVisible(true);
                       }
                     }}
                   >
