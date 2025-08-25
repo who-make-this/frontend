@@ -25,6 +25,7 @@ function App() {
     const [scale, setScale] = useState(1);
     const [missionsCompleted, setMissionsCompleted] = useState(0);
     const [isMissionActive, setIsMissionActive] = useState(false);
+    
 
     useEffect(() => {
         const handleResize = () => {
