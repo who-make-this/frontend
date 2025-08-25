@@ -4,35 +4,34 @@ import eatImg from "../assets/eat.svg";
 import moodImg from "../assets/mood.svg";
 import exploreImg from "../assets/explore.svg";
 
-export default function MissionCard({ category, missionNumbers, missionTitle, content }) {
+export default function MissionCard({
+  category,
+  missionNumbers,
+  missionTitle,
+  content,
+}) {
   const cardRef = useRef(null);
 
   const [fontSize, setFontSize] = useState(24);
   const [cardHeight, setCardHeight] = useState(480);
   const [paddingTop, setPaddingTop] = useState("pt-12");
   const [borderRadius, setBorderRadius] = useState("24px");
-  const [padding, setpadding] = useState("100");
+  const [padding, setPadding] = useState("100");
 
   useEffect(() => {
     function updateSize() {
       if (!cardRef.current) return;
       const width = cardRef.current.offsetWidth;
 
-      // 폰트 크기: 너비 / 10, 12 ~ 24 제한
       const newFontSize = Math.min(Math.max(width / 8, 10), 24);
       setFontSize(newFontSize);
 
-      // 카드 높이: 원비율(464/306) 유지하며 조정
       const newHeight = (480 / 306) * width;
       setCardHeight(newHeight);
 
-      // padding top
       setPaddingTop(width <= 250 ? "pt-2" : "pt-12");
-
-      // 너비에 따라 카드 모서리 곡률 수정
       setBorderRadius(width <= 250 ? "16px" : "24px");
-
-      setpadding(width <= 250 ? "10" : "24");
+      setPadding(width <= 250 ? "10" : "24");
     }
 
     updateSize();
@@ -40,7 +39,6 @@ export default function MissionCard({ category, missionNumbers, missionTitle, co
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  // 타입별 색상 및 이미지 매핑
   const typeStyles = {
     먹보형: {
       colors: ["#9A8C4F", "#D19B98"],
@@ -56,29 +54,40 @@ export default function MissionCard({ category, missionNumbers, missionTitle, co
     },
   };
 
-  // 잘못된 타입 처리 기본값 지정
   const { colors, image } = typeStyles[category] || typeStyles["먹보형"];
 
   return (
     <div
       ref={cardRef}
-      className="relative w-full"
+      className="relative w-full overflow-hidden"
       style={{
         height: `${cardHeight}px`,
         borderRadius: borderRadius,
         background: `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 100%)`,
         boxShadow:
-          "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+          "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px z-30",
       }}
     >
-    
+      {/* 빛 오버레이 */}
+      <div
+        className="absolute top-0 left-0 h-full z-30 animate-fade-shine"
+        style={{
+          width: "30%",
+          background:
+            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+          pointerEvents: "none",
+          mixBlendMode: "lighten",
+          backdropFilter: "blur(30px)",
+        }}
+      />
+
       {/* 카드 태그 */}
       <div
-        className="flex justify-between text-gray-800 font-medium"
+        className="flex justify-between text-gray-800 font-medium z-50"
         style={{ fontSize: `${fontSize * 0.6}px`, padding: `${padding}px` }}
       >
         <div
-          className="bg-[#FFFAFA70] flex justify-center rounded-full"
+          className="bg-[#FFFAFA70] flex justify-center rounded-full z-50"
           style={{
             width: fontSize * 2.8,
             maxHeight: cardHeight * 0.3,
@@ -88,11 +97,13 @@ export default function MissionCard({ category, missionNumbers, missionTitle, co
         >
           {category}
         </div>
-        <div style={{ fontSize: `${fontSize * 0.6}px` }}>No.{missionNumbers}</div>
+        <div style={{ fontSize: `${fontSize * 0.6}px` }} className=" z-50">
+          No.{missionNumbers}
+        </div>
       </div>
 
       {/* 타입 이미지 */}
-      <div className={`flex justify-center ${paddingTop}`}>
+      <div className={`flex justify-center ${paddingTop} z-50`}>
         <img
           src={image}
           alt={`${category} 이미지`}
@@ -102,20 +113,24 @@ export default function MissionCard({ category, missionNumbers, missionTitle, co
             height: "auto",
             maxWidth: "100%",
             maxHeight: cardHeight * 0.3,
+            zIndex: 50,
           }}
         />
       </div>
 
       {/* 미션 설명 */}
       <div
-        className="flex flex-col"
+        className="flex flex-col z-50"
         style={{ padding: `${padding * 1}px ${padding * 1.5}px` }}
       >
-        <div className="font-extrabold" style={{ fontSize: `${fontSize}px` }}>
+        <div
+          className="font-extrabold  z-50"
+          style={{ fontSize: `${fontSize}px` }}
+        >
           {missionTitle}
         </div>
         <div
-          className="font-medium text-[#2B2B2B]"
+          className="font-medium text-[#2B2B2B]  z-50"
           style={{ fontSize: `${fontSize * 0.66}px` }}
         >
           {content}

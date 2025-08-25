@@ -19,8 +19,8 @@ import {
   getCompletedMissions,
   authenticateMission,
   endMission,
+  getCompletedImages,
 } from "./api/MissionApi";
-
 
 export default function MissionPage() {
   const marketId = 1;
@@ -135,7 +135,6 @@ export default function MissionPage() {
       setAuthInProgress(true);
 
       try {
-
         // 서버로 인증 요청
         const updatedMission = await authenticateMission(
           randomMission.id,
@@ -404,7 +403,16 @@ export default function MissionPage() {
                   <button
                     className="flex-1 py-3 rounded-full bg-gray-200 text-gray-800"
                     onClick={async () => {
+                      const completedImages = await getCompletedImages();
+                      console.log(completedImages);
                       try {
+                        if (
+                          !Array.isArray(completedImages) ||
+                          completedImages.length === 0
+                        ) {
+                          setCannotExitVisible(true);
+                          return;
+                        }
                         await endMission(marketId);
                         closePopup();
                         navigate("/reportentry");
