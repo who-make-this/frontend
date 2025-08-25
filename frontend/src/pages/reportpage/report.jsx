@@ -14,15 +14,15 @@ import leftArrowIcon from '../../assets/circle_arrow_left.svg';
 
 const LoadingSpinner = () => (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
-                <img
-                  src={loading}
-                  alt="인증 중 로딩"
-                  className="w-16 h-16 animate-spin mb-4"
-                />
-                <div className="text-white text-xl font-normal">
-                  탐험 일지 불러 오는 중...
-                </div>
-            </div>
+        <img
+            src={loading}
+            alt="인증 중 로딩"
+            className="w-16 h-16 animate-spin mb-4"
+        />
+        <div className="text-white text-xl font-normal">
+            탐험 일지 불러 오는 중...
+        </div>
+    </div>
 );
 
 const formatDate = (isoString) => new Date(isoString).toLocaleDateString('ko-KR').replace(/\./g, '/').slice(0, -1);
@@ -49,47 +49,43 @@ export default function ReportPage() {
     const swiperRef = useRef(null);
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
+    
+    // --- 1. 뷰 상태를 부모 컴포넌트에서 관리합니다 ---
+    const [activeView, setActiveView] = useState('report');
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
                 const token = Cookies.get('token');
-                if (!token) {
-                    throw new Error("No token found");
-                }
+                if (!token) throw new Error("No token found");
                 const baseUrl = import.meta.env.VITE_BACKEND_URL || "";
                 const response = await axios.get(`${baseUrl}/reports/my-reports`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 
-                const transformedData = response.data.map(report => {
-
-                    return {
-                        id: report.id,
-                        marketName: report.reportTitle.replace(' 탐험', ''),
-                        date: formatDate(report.explorationDate),
-                        timeRange: `${formatTime(report.startTime)} - ${formatTime(report.endTime)}`,
-                        mainType: report.userType,
-                        scores: {
-                            sensitivity: report.completedMissionsByCategories["감성형"] || 0,
-                            foodie: report.completedMissionsByCategories["먹보형"] || 0,
-                            adventure: report.completedMissionsByCategories["모험형"] || 0,
-                        },
-                        results: {
-                            totalScore: report.totalScore,
-                            mileage: `${report.earnedMileage}M`,
-                            thisMonthTotal: `${report.remainingMonthlyMileage}M`,
-                        },
-                        status: "성공",
-                        diary: {
-                            explorationDate: formatDiaryDate(report.explorationDate),
-                            journalContent: report.journalContent,
-                            imageUrl: report.mainImageUrl || ""
-                        }
-                    };
-                });
+                const transformedData = response.data.map(report => ({
+                    id: report.id,
+                    marketName: report.reportTitle.replace(' 탐험', ''),
+                    date: formatDate(report.explorationDate),
+                    timeRange: `${formatTime(report.startTime)} - ${formatTime(report.endTime)}`,
+                    mainType: report.userType,
+                    scores: {
+                        sensitivity: report.completedMissionsByCategories["감성형"] || 0,
+                        foodie: report.completedMissionsByCategories["먹보형"] || 0,
+                        adventure: report.completedMissionsByCategories["모험형"] || 0,
+                    },
+                    results: {
+                        totalScore: report.totalScore,
+                        mileage: `${report.earnedMileage}M`,
+                        thisMonthTotal: `${report.remainingMonthlyMileage}M`,
+                    },
+                    status: "성공",
+                    diary: {
+                        explorationDate: formatDiaryDate(report.explorationDate),
+                        journalContent: report.journalContent,
+                        imageUrl: report.mainImageUrl || ""
+                    }
+                }));
 
                 setReports(transformedData);
                 if (transformedData.length <= 1) {
@@ -130,7 +126,12 @@ export default function ReportPage() {
                                 {reports.map((report) => (
                                     <SwiperSlide key={report.id}>
                                         <div className="flex justify-center">
-                                            <ReportContainer report={report} />
+                                            {/* --- 2. 뷰 상태와 상태 변경 함수를 props로 전달합니다 --- */}
+                                            <ReportContainer 
+                                                report={report} 
+                                                activeView={activeView}
+                                                setActiveView={setActiveView}
+                                            />
                                         </div>
                                     </SwiperSlide>
                                 ))}
