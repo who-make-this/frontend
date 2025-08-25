@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from '../../../api/Authorization';
 import Cookies from 'js-cookie';
 
@@ -16,6 +17,26 @@ export async function createMission(marketId) {
     throw error;
   }
 }
+
+// 완료된 이미지 조회
+export async function getCompletedImages() {
+  try {
+    const token = Cookies.get("token");
+    if (!token) throw new Error("로그인이 필요합니다.");
+
+    const response = await axios.get(`${backendUrl}/reports/completed-images`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // 배열을 기대
+  } catch (error) {
+    console.error("완료 이미지 불러오기 실패:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
 
 // 미션 종료 (탐험 종료)
 export async function endMission(marketId) {

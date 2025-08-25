@@ -148,6 +148,7 @@ export default function JournalEntryPage({ setIsMissionActive }) {
             };
             
             setGeneratedReport(transformedData);
+            setIsMissionActive(false);
 
         } catch (error) {
             console.error("🚨 일지 생성 실패:", error);
