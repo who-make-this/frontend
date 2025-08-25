@@ -6,40 +6,42 @@ import { EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 
-// --- Component & Asset Imports ---
 import Logo from "../../component/Logo";
 import SecretPageImg from "../../assets/secretbgimg.svg";
 import MissionProgress from '../../component/missionProgress';
 import SecretStory from '../../component/secretStory';
 import CustomPagination from '../../component/CustomPagination';
+import loading from "../../assets/loading.svg";
 
-// --- Loading & Error Components ---
 const LoadingScreen = () => (
-    <div className="flex items-center justify-center h-full">
-        <div className="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-white"></div>
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
+        <img
+            src={loading}
+            alt="인증 중 로딩"
+            className="w-16 h-16 animate-spin mb-4"
+        />
+        <div className="text-white text-xl font-normal">
+            시장의 비밀이야기 불러 오는 중...
+        </div>
     </div>
 );
+
 const ErrorScreen = ({ message }) => (
     <div className="flex items-center justify-center h-full">
         <p className="text-white bg-red-500/50 p-4 rounded-lg">{message}</p>
     </div>
 );
 
-
-// --- 1. props를 받지 않도록 수정 ---
 export default function Secretpage() {
-    // --- State Management ---
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    // --- 2. missionsCompleted를 이 컴포넌트의 자체 state로 관리 ---
     const [missionsCompleted, setMissionsCompleted] = useState(0);
     
     const [swiperInstance, setSwiperInstance] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    // --- Data Fetching ---
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -48,18 +50,16 @@ export default function Secretpage() {
                 if (!token) throw new Error("로그인이 필요합니다.");
 
                 const baseUrl = import.meta.env.VITE_BACKEND_URL || "";
-                
-                // 3. 사용자 정보와 비밀 이야기를 동시에 요청
+
                 const userPromise = axios.get(`${baseUrl}/users/me`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                const lorePromise = axios.get(`${baseUrl}/lore/1`, { // marketId는 1로 고정
+                const lorePromise = axios.get(`${baseUrl}/lore/1`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
                 const [userResponse, loreResponse] = await Promise.all([userPromise, lorePromise]);
 
-                // 4. API로 받아온 최신 정보로 state를 업데이트
                 setMissionsCompleted(userResponse.data.completedMissionCount);
 
                 const transformedData = loreResponse.data.map((storyFromApi, index) => ({
@@ -81,10 +81,10 @@ export default function Secretpage() {
         };
 
         fetchData();
-    }, []); // 페이지가 로드될 때 한 번만 실행
+    }, []);
 
-    // --- Swiper Logic ---
     const loopedStories = stories.length > 0 ? [...stories, stories[0]] : [];
+    
     const handleSlideChange = (swiper) => {
         if (isAnimating) return;
         if (swiper.activeIndex === stories.length) {
@@ -126,16 +126,22 @@ export default function Secretpage() {
                                 onSwiper={setSwiperInstance}
                                 onSlideChange={handleSlideChange}
                             >
-                                {loopedStories.map((story, index) => (
-                                    <SwiperSlide key={`${story.id}-${index}`}>
-                                        <div className="flex justify-center items-center">
-                                            <SecretStory
-                                                story={story}
-                                                clearedMissions={missionsCompleted}
-                                            />
-                                        </div>
-                                    </SwiperSlide>
-                                ))}
+                                {loopedStories.map((story, index) => {
+                                    const storyIndex = index >= stories.length ? 0 : index;
+                                    const isCurrentCard = activeIndex === storyIndex;
+                                    
+                                    return (
+                                        <SwiperSlide key={`${story.id}-${index}`}>
+                                            <div className="flex justify-center items-center">
+                                                <SecretStory
+                                                    story={story}
+                                                    clearedMissions={missionsCompleted}
+                                                    isCurrentCard={isCurrentCard}
+                                                />
+                                            </div>
+                                        </SwiperSlide>
+                                    );
+                                })}
                             </Swiper>
 
                             <CustomPagination 

@@ -1,25 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import LockIcon from '../assets/lockicon.svg';
 import SecretStorybg1 from "../assets/secretmarketimg1.svg";
 
-// storyId 대신 story 객체 전체를 props로 받습니다.
-export default function SecretStory({ story, clearedMissions }) {
+const getViewedAnimations = () => {
+    try {
+        const saved = localStorage.getItem('viewedStoryAnimations');
+        return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch (error) {
+        console.error('localStorage에서 애니메이션 상태를 불러오는데 실패:', error);
+        return new Set();
+    }
+};
+
+const addViewedAnimation = (storyId) => {
+    try {
+        const viewedAnimations = getViewedAnimations();
+        viewedAnimations.add(storyId);
+        localStorage.setItem('viewedStoryAnimations', JSON.stringify([...viewedAnimations]));
+    } catch (error) {
+        console.error('localStorage에 애니메이션 상태를 저장하는데 실패:', error);
+    }
+};
+
+export default function SecretStory({ 
+    story, 
+    clearedMissions, 
+    isCurrentCard = false
+}) {
     if (!story) return null;
 
-    const isLocked = clearedMissions < story.unlockRequirement;
-    
-    // 잠겨있거나, API에서 이미지를 주지 않았을 경우(!story.image) 기본 이미지를 사용합니다.
-    const backgroundImage = isLocked || !story.image ? SecretStorybg1 : story.image;
+    const isActuallyUnlocked = clearedMissions >= story.unlockRequirement;
+
+    const [hasViewedAnimation, setHasViewedAnimation] = useState(() => {
+        return getViewedAnimations().has(story.id);
+    });
+
+    const [shouldAnimate, setShouldAnimate] = useState(false);
+
+    useEffect(() => {
+        if (isCurrentCard && isActuallyUnlocked && !hasViewedAnimation) {
+            setShouldAnimate(true);
+            
+            addViewedAnimation(story.id);
+            setHasViewedAnimation(true);
+            
+            const timer = setTimeout(() => {
+                setShouldAnimate(false);
+            }, 1200); 
+
+            return () => clearTimeout(timer);
+        }
+    }, [isCurrentCard, isActuallyUnlocked, hasViewedAnimation, story.id]);
+
+    const showLockOverlay = !isActuallyUnlocked || shouldAnimate;
+    const applyBlur = !isActuallyUnlocked && !shouldAnimate;
+
+    const backgroundImage = isActuallyUnlocked && story.image ? story.image : SecretStorybg1;
 
     return (
         <div className="w-[349px] h-[344px] shadow-[0_0_0_1px_rgba(0,0,0,0.05),_0_2px_8px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden relative">
-            <div className={`flex flex-col h-full ${isLocked ? 'blur-[4px]' : ''}`}>
+            <div className={`flex flex-col h-full
+                 ${applyBlur ? 'blur-[4px]' : ''}
+                 ${shouldAnimate ? 'animate-unblur' : ''}`
+            }>
                 <div className="relative w-full h-[175px]">
-                    <img
-                        src={backgroundImage}
-                        alt={story.title}
-                        className="w-full h-full object-cover"
-                    />
+                    <img src={backgroundImage} alt={story.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-3 flex-grow bg-[#FFFAFA] -mt-1.5">
                     <div>
@@ -32,11 +77,13 @@ export default function SecretStory({ story, clearedMissions }) {
                 </div>
             </div>
 
-            {isLocked && (
-                <div className="absolute inset-0 z-10 bg-[#FFFAFA80] flex flex-col items-center justify-center">
+            {showLockOverlay && (
+                <div className={`absolute inset-0 z-10 bg-[#FFFAFA80] flex flex-col items-center justify-center rounded-xl
+                     ${shouldAnimate ? 'animate-unlock-fall-fade' : ''}`
+                }>
                     <img src={LockIcon} alt="Locked" className="w-[80px] h-[80px] mb-2" />
                     <p 
-                        className="text-[#2B2B2B]" 
+                        className="text-[#2B2B2B]"
                         style={{
                             fontFamily: 'MuseumClassic, sans-serif',
                             fontWeight: 'bold', 
