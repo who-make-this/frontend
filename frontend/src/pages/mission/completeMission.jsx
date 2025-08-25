@@ -31,7 +31,7 @@ export default function CompleteMission({ missions }) {
       {/* 카드 뒤집기 */}
       {selectedMission && (
         <div
-          className="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-100 no-scrollbar"
+          className="fixed inset-0 bg-black/70 flex flex-col items-center justify-center z-10 no-scrollbar"
           onClick={closeOverlay} // 뒷배경 클릭 닫기
         >
           <div

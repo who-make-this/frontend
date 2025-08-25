@@ -23,13 +23,13 @@ export default function MissionCard({
       if (!cardRef.current) return;
       const width = cardRef.current.offsetWidth;
 
-      const newFontSize = Math.min(Math.max(width / 10, 12), 24);
+      const newFontSize = Math.min(Math.max(width / 8, 10), 24);
       setFontSize(newFontSize);
 
       const newHeight = (480 / 306) * width;
       setCardHeight(newHeight);
 
-      setPaddingTop(width <= 250 ? "pt-4" : "pt-12");
+      setPaddingTop(width <= 250 ? "pt-2" : "pt-12");
       setBorderRadius(width <= 250 ? "16px" : "24px");
       setPadding(width <= 250 ? "10" : "24");
     }
@@ -68,14 +68,16 @@ export default function MissionCard({
           "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px z-30",
       }}
     >
-      {/* 두 줄 빛 오버레이 - 중앙 투명 */}
+      {/* 빛 오버레이 */}
       <div
-        className="absolute inset-0 z-30 animate-fade-shine"
+        className="absolute top-0 left-0 h-full z-30 animate-fade-shine"
         style={{
           width: "30%",
           background:
-            "linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.2) 70%, rgba(255,255,255,0) 70%, rgba(255,255,255,0) 85%, rgba(255,255,255,0.2) 80%, rgba(255,255,255,0.2) 100%)",
+            "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
           pointerEvents: "none",
+          mixBlendMode: "lighten",
+          backdropFilter: "blur(30px)",
         }}
       />
 
@@ -101,7 +103,7 @@ export default function MissionCard({
       </div>
 
       {/* 타입 이미지 */}
-      <div className={`flex justify-center ${paddingTop} my-2`}>
+      <div className={`flex justify-center ${paddingTop} z-50`}>
         <img
           src={image}
           alt={`${category} 이미지`}
@@ -110,7 +112,7 @@ export default function MissionCard({
             width: fontSize * 25,
             height: "auto",
             maxWidth: "100%",
-            maxHeight: cardHeight * 0.38,
+            maxHeight: cardHeight * 0.3,
             zIndex: 50,
           }}
         />
@@ -119,20 +121,17 @@ export default function MissionCard({
       {/* 미션 설명 */}
       <div
         className="flex flex-col z-50"
-        style={{ padding: `${padding * 0.8}px` }}
+        style={{ padding: `${padding * 1}px ${padding * 1.5}px` }}
       >
         <div
-          className="font-extrabold z-50"
+          className="font-extrabold  z-50"
           style={{ fontSize: `${fontSize}px` }}
         >
           {missionTitle}
         </div>
         <div
-          className="font-medium text-[#2B2B2B] z-50"
-          style={{
-            fontSize: `${fontSize * 0.66}px`,
-            paddingTop: `${padding * 0.2}px`,
-          }}
+          className="font-medium text-[#2B2B2B]  z-50"
+          style={{ fontSize: `${fontSize * 0.66}px` }}
         >
           {content}
         </div>

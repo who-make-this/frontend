@@ -260,7 +260,7 @@ export default function MissionPage() {
 
         {/* 기존 카드 영역 */}
         <div
-          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto h-[464px] max-w-[312px] hide-scrollbar ${
+          className={`absolute flex flex-col items-center z-20 gap-4 px-4 overflow-auto h-[464px] max-w-[309px] hide-scrollbar ${
             selectedType ? "top-[120px] h-full" : "top-[160px] h-[464px]"
           }`}
         >
@@ -280,28 +280,28 @@ export default function MissionPage() {
         {/* 하단 버튼 */}
         <div>
           {!selectedType ? (
-            <div className="absolute bottom-32 left-1/2 -translate-x-1/2 w-78 px-4 flex justify-between z-50">
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[349px] px-4 flex justify-between z-50">
               <button
                 onClick={openPopup}
-                className="w-33 h-[50px] flex items-center px-4 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
+                className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-white rounded-xl text-white duration-250 ease-in-out active:bg-[#ffffffb9]"
               >
                 <img
                   src={exit}
                   className="w-[24px] h-[24px] object-contain"
                   alt="탐험 종료"
                 />
-                <div className="ps-2 font-medium">탐험 종료</div>
+                <div className="ps-2">탐험 종료</div>
               </button>
               <button
                 onClick={handleAuthenticateClick}
-                className="w-33 h-[50px] flex items-center px-4 border border-black rounded-xl text-black bg-white duration-250 ease-in-out active:bg-[#A47764] active:text-white active:font-bold"
+                className="w-[145px] h-[53px] flex items-center gap-2 px-4 py-2 border border-black rounded-xl text-black bg-white duration-250 ease-in-out active:bg-[#A47764] active:text-white active:font-bold"
               >
                 <img
                   src={vectorCamera}
                   className="w-[24px] h-[24px] object-contain"
                   alt="미션 인증"
                 />
-                <div className="ps-2 font-medium">미션 인증</div>
+                <div className="ps-2">미션 인증</div>
               </button>
             </div>
           ) : null}
