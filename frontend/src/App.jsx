@@ -41,10 +41,10 @@ function App() {
     const [loginError, setLoginError] = useState('');
 
     useEffect(() => {
-        const autoLogin = async () => {
+        const autoLoginAndFetchUser = async () => {
             const hardcodedUser = {
-             "username": "whomadethis",
-             "password": "WhoMadeThis!2#"
+               "username": "whomadethis",
+               "password": "WhoMadeThis!2#"
             }; 
             const baseUrl = import.meta.env.VITE_BACKEND_URL || "";
             const url = `${baseUrl}/users/sign-in`;
@@ -55,66 +55,74 @@ function App() {
                 Cookies.set("token", accessToken, { expires: 7 });
                 setIsLoggedIn(true);
 
-                const token = Cookies.get('token');
-                const responseMission = await axios.get(`${baseUrl}/users/me`, {
-                    headers: { Authorization: `Bearer ${token}` }
+                // --- 1. 로그인 성공 후, 사용자 정보를 바로 가져옵니다 ---
+                const userResponse = await axios.get(`${baseUrl}/users/me`, {
+                    headers: { Authorization: `Bearer ${accessToken}` }
                 });
 
-                 setMissionsCompleted(responseMission.data.completedMissionCount);
+                // --- 2. 받아온 데이터로 missionsCompleted 상태를 업데이트합니다 ---
+                setMissionsCompleted(userResponse.data.completedMissionCount);
+
             } catch (error) {
                 console.error("🚨 Auto-login error:", error);
-                const errorMessage = error.response?.data || "서버에 연결할 수 없습니다.";
+                const errorMessage = error.response?.data?.message || "서버에 연결할 수 없습니다.";
                 setLoginError(errorMessage);
             }
         };
 
-        autoLogin();
+        autoLoginAndFetchUser();
     }, []);
 
     return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard]">
-      <div
-        style={{
-          transform: `scale(${scale})`,
-          transformOrigin: "top center",
-          width: "375px",
-          height: "812px",
-        }}
-        className="bg-white shadow-sm flex flex-col"
-      >
-        {!isLoggedIn && !loginError}
-        {loginError && <LoginFailedScreen error={loginError} />}
-        {isLoggedIn && (
-          <Router>
-            <div className="flex-1 flex items-center justify-center">
-              <Routes>
-                {/* 메인 페이지 접근 제한 */}
-                <Route
-                  path="/"
-                  element={
-                    isMissionActive ? <Navigate to="/mission" replace /> : <MainPage setIsMissionActive={setIsMissionActive} />
-                  }
-                />
-
-                {/* 미션 페이지 접근 제한 */}
-                <Route
-                  path="/mission"
-                  element={
-                    isMissionActive ? <MissionPage setIsMissionActive={setIsMissionActive}/> : <Navigate to="/" replace />
-                  }
-                />
-
-                <Route path="/reportentry" element={<ReportEntryPage />} />
-                <Route path="/mypage" element={<MyPage />} />
-                <Route path="/secret" element={<Secretpage missionsCompleted={missionsCompleted}/>} />
-                <Route path="/report" element={<ReportPage />} />
-              </Routes>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 overflow-hidden font-[pretendard]">
+            <div
+                style={{
+                    transform: `scale(${scale})`,
+                    transformOrigin: "top center",
+                    width: "375px",
+                    height: "812px",
+                }}
+                className="bg-white shadow-sm flex flex-col"
+            >
+                {!isLoggedIn && !loginError && <div>Loading...</div> /* Optional: Add a proper loading screen */}
+                {loginError && <LoginFailedScreen error={loginError} />}
+                {isLoggedIn && (
+                    <Router>
+                        <div className="flex-1 flex items-center justify-center">
+                            <Routes>
+                                <Route
+                                    path="/"
+                                    element={
+                                        isMissionActive ? <Navigate to="/mission" replace /> : <MainPage setIsMissionActive={setIsMissionActive} />
+                                    }
+                                />
+                                <Route
+                                    path="/mission"
+                                    element={
+                                        isMissionActive ? (
+                                            <MissionPage 
+                                                setIsMissionActive={setIsMissionActive} 
+                                                setMissionsCompleted={setMissionsCompleted}
+                                            />
+                                        ) : (
+                                            <Navigate to="/" replace />
+                                        )
+                                    }
+                                />
+                                <Route path="/reportentry" element={<ReportEntryPage setIsMissionActive={setIsMissionActive} />} />
+                                <Route path="/mypage" element={<MyPage />} />
+                                <Route 
+                                    path="/secret" 
+                                    element={<Secretpage/>} 
+                                />
+                                <Route path="/report" element={<ReportPage />} />
+                            </Routes>
+                        </div>
+                    </Router>
+                )}
             </div>
-          </Router>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default App;

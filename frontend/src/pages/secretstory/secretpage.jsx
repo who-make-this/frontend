@@ -26,14 +26,14 @@ const ErrorScreen = ({ message }) => (
 );
 
 
-// --- 1. props로 missionsCompleted를 받도록 수정 ---
-export default function Secretpage({ missionsCompleted }) {
+// --- 1. props를 받지 않도록 수정 ---
+export default function Secretpage() {
     // --- State Management ---
     const [stories, setStories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    // --- 2. 아래의 중복 선언을 삭제합니다 ---
-    // const [missionsCompleted, setMissionsCompleted] = useState(3); 
+    // --- 2. missionsCompleted를 이 컴포넌트의 자체 state로 관리 ---
+    const [missionsCompleted, setMissionsCompleted] = useState(0);
     
     const [swiperInstance, setSwiperInstance] = useState(null);
     const [activeIndex, setActiveIndex] = useState(0);
@@ -41,40 +41,47 @@ export default function Secretpage({ missionsCompleted }) {
 
     // --- Data Fetching ---
     useEffect(() => {
-        const fetchSecretStories = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
                 const token = Cookies.get('token');
                 if (!token) throw new Error("로그인이 필요합니다.");
 
-                const marketId = 1;
                 const baseUrl = import.meta.env.VITE_BACKEND_URL || "";
-                const url = `${baseUrl}/lore/${marketId}`;
-
-                const response = await axios.get(url, {
+                
+                // 3. 사용자 정보와 비밀 이야기를 동시에 요청
+                const userPromise = axios.get(`${baseUrl}/users/me`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const lorePromise = axios.get(`${baseUrl}/lore/1`, { // marketId는 1로 고정
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
-                const transformedData = response.data.map((storyFromApi, index) => ({
+                const [userResponse, loreResponse] = await Promise.all([userPromise, lorePromise]);
+
+                // 4. API로 받아온 최신 정보로 state를 업데이트
+                setMissionsCompleted(userResponse.data.completedMissionCount);
+
+                const transformedData = loreResponse.data.map((storyFromApi, index) => ({
                     id: index + 1,
                     unlockRequirement: storyFromApi.requiredMissionCount,
                     title: storyFromApi.data ? storyFromApi.data.title : "???",
                     content: storyFromApi.data ? storyFromApi.data.content : "아직 잠겨있는 이야기입니다.",
                     image: storyFromApi.data ? storyFromApi.data.imageUrl : null,
                 }));
-
                 setStories(transformedData);
 
             } catch (err) {
-                console.error("🚨 비밀 이야기 조회 실패:", err);
-                setError("이야기를 불러오는 데 실패했습니다.");
+                console.error("🚨 데이터 조회 실패:", err);
+                setError("데이터를 불러오는 데 실패했습니다.");
                 setStories([]);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchSecretStories();
-    }, []);
+        fetchData();
+    }, []); // 페이지가 로드될 때 한 번만 실행
 
     // --- Swiper Logic ---
     const loopedStories = stories.length > 0 ? [...stories, stories[0]] : [];

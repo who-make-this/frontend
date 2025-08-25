@@ -7,15 +7,22 @@ import Cookies from 'js-cookie';
 import ReportbgImg from "../../assets/reportbgimg.svg?react";
 import Logo from "../../component/Logo";
 import ReportContainer from '../../component/ReportContainer';
+import loading from "../../assets/loading.svg";
 
 import rightArrowIcon from '../../assets/circle_arrow_right.svg';
 import leftArrowIcon from '../../assets/circle_arrow_left.svg';
 
 const LoadingSpinner = () => (
-    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
-        <div className="w-12 h-12 bg-green-400 rounded-full animate-grow-rotate"></div>
-        <p className="mt-8 text-white text-lg font-semibold">탐험 일지 불러 오는 중...</p>
-    </div>
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
+                <img
+                  src={loading}
+                  alt="인증 중 로딩"
+                  className="w-16 h-16 animate-spin mb-4"
+                />
+                <div className="text-white text-xl font-normal">
+                  탐험 일지 불러 오는 중...
+                </div>
+            </div>
 );
 
 const formatDate = (isoString) => new Date(isoString).toLocaleDateString('ko-KR').replace(/\./g, '/').slice(0, -1);

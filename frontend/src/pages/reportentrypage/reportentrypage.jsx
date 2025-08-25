@@ -5,9 +5,9 @@ import Cookies from 'js-cookie';
 // --- Asset Imports ---
 import ReportbgImg from "../../assets/reportbgimg.svg?react";
 import Logo from "../../component/Logo";
-import CameraIcon from '../../assets/camera.svg?react';
-import ReportContainer from '../../component/ReportContainer';
 import JournalEntryForm from '../../component/JournalEntryForm';
+import ReportContainer from '../../component/ReportContainer';
+import loading1 from "../../assets/loading.svg"; 
 
 const ImageGalleryModal = ({ onClose, onSelectImage }) => {
     const [images, setImages] = useState([]);
@@ -30,7 +30,7 @@ const ImageGalleryModal = ({ onClose, onSelectImage }) => {
                 setImages(response.data.map(img => img.imageUrl));
 
             } catch (err) {
-                console.error("🚨 이미지 갤러리 로드 실패:", err);
+                console.error("🚨 이미지 갤러리 로드 실패:", err);  
                 setError("이미지를 불러오는 데 실패했습니다.");
             } finally {
                 setLoading(false);
@@ -46,9 +46,18 @@ const ImageGalleryModal = ({ onClose, onSelectImage }) => {
                 <button onClick={onClose} className="absolute left-5 mb-1.5 text-[40px] font-extralight">&times;</button>
                 <h2 className="text-xl font-normal">탐험 일지 사진 선택</h2>
             </header>
-            <div className="flex-grow overflow-y-auto hide-scrollbar">
+            <div className="flex-grow overflow-y-auto hide-scrollbar p-2">
                 {loading ? (
-                    <div className="flex justify-center items-center h-full"><div className="w-8 h-8 border-2 border-dashed rounded-full animate-spin border-white"></div></div>
+                    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
+                        <img
+                            src={loading1}
+                            alt="인증 중 로딩"
+                            className="w-16 h-16 animate-spin mb-4"
+                        />
+                        <div className="text-white text-xl font-normal">
+                            이미지 불러 오는 중...
+                        </div>
+                    </div>
                 ) : error ? (
                     <div className="flex justify-center items-center h-full"><p className="text-white text-center">{error}</p></div>
                 ) : images.length === 0 ? (
@@ -82,15 +91,12 @@ const formatDiaryDate = (iso) => {
 };
 
 
-
-export default function reportentrypage({ setIsMissionActive = () => {} }) {
-
+export default function JournalEntryPage({ setIsMissionActive }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [journalText, setJournalText] = useState("");
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false); // 전송 중 로딩 상태
-    const [generatedReport, setGeneratedReport] = useState(null); // API 응답으로 받은 리포트
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [generatedReport, setGeneratedReport] = useState(null);
 
     const handleSelectImage = (imageSrc) => {
         setSelectedImage(imageSrc);
@@ -98,6 +104,7 @@ export default function reportentrypage({ setIsMissionActive = () => {} }) {
     };
 
     const handleSubmit = async () => {
+        if (isSubmitting) return;
         setIsSubmitting(true); 
         try {
             const token = Cookies.get('token');
@@ -115,7 +122,6 @@ export default function reportentrypage({ setIsMissionActive = () => {} }) {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            // API 응답 데이터를 프론트엔드 형식으로 변환
             const report = response.data;
             const transformedData = {
                 id: report.id,
@@ -141,12 +147,11 @@ export default function reportentrypage({ setIsMissionActive = () => {} }) {
                 }
             };
             
-            setGeneratedReport(transformedData); // 변환된 데이터를 state에 저장
-            setIsMissionActive(false);
+            setGeneratedReport(transformedData);
 
         } catch (error) {
-            console.error("� 일지 생성 실패:", error);
-            alert("일지 생성에 실패했습니다. 다시 시도해주세요."); // 사용자에게 에러 알림
+            console.error("🚨 일지 생성 실패:", error);
+            alert("일지 생성에 실패했습니다. 다시 시도해주세요.");
         } finally {
             setIsSubmitting(false); 
         }
@@ -172,11 +177,24 @@ export default function reportentrypage({ setIsMissionActive = () => {} }) {
                         onImageSelectClick={() => setIsGalleryOpen(true)}
                         onTextChange={(e) => setJournalText(e.target.value)}
                         onSubmit={handleSubmit}
-                        isSubmitting={isSubmitting} // 로딩 상태 전달
+                        isSubmitting={isSubmitting}
                     />
                 )}
 
                 {isGalleryOpen && <ImageGalleryModal onClose={() => setIsGalleryOpen(false)} onSelectImage={handleSelectImage} />}
+
+                {isSubmitting && (
+                    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/70">
+                        <img
+                            src={loading1}
+                            alt="인증 중 로딩"
+                            className="w-16 h-16 animate-spin mb-4"
+                        />
+                        <div className="text-white text-xl font-normal">
+                            탐험 일지 생성 중...
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

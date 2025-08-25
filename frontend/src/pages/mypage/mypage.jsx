@@ -53,7 +53,6 @@ export default function MyPage() {
     fetchUserData();
   }, []);
 
-  // 마일리지 재조회 함수
   const fetchMileage = async () => {
     try {
       const token = Cookies.get('token');
@@ -125,7 +124,7 @@ export default function MyPage() {
             </div>
             <div className="relative h-12 mt-6">
               <div className="absolute left-[11px]"><p className="text-[14px] font-[400] text-[#2B2B2B80]">Explorations</p><p className="text-[16px] font-semibold">{userData.explorationCount}</p></div>
-              <div className="absolute right-[48px]"><p className="text-[14px] font-[400] text-[#2B2B2B80]">Cleared</p><p className="text-[16px] font-semibold text-start">{userData.completedMissionCount}</p></div>
+              <div className="absolute right-[60px]"><p className="text-[14px] font-[400] text-[#2B2B2B80]">Cleared</p><p className="text-[16px] font-semibold text-start">{userData.completedMissionCount}</p></div>
             </div>
           </div>
           <hr className="w-[267px] mx-auto mt-[35px] border-t border-[0.5px] border-[#9A8C4F33]" />
@@ -162,7 +161,7 @@ export default function MyPage() {
             onClose={handleCloseModal} 
             isClosing={isClosing} 
             currentMileage={userData.mileage} 
-            onMileageUpdate={fetchMileage} // 여기에 마일리지 갱신 콜백 전달
+            onMileageUpdate={fetchMileage}
           />
         )}
       </div>
