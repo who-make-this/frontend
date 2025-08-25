@@ -83,7 +83,7 @@ const formatDiaryDate = (iso) => {
 
 
 
-export default function reportentrypage({ setIsMissionActive }) {
+export default function reportentrypage({ setIsMissionActive = () => {} }) {
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [journalText, setJournalText] = useState("");
