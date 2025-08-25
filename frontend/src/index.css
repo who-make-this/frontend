@@ -67,18 +67,15 @@
 
 @keyframes fade-shine {
   0% {
-    transform: translateX(-150%) skewX(-20deg);
-    opacity: 0;
+    transform: translateX(-300%) skewX(-30deg);
+    opacity: 0.0;
   }
-  40% {
-    opacity: 0.2;
-  }
-  60% {
-    opacity: 0.4;
+  50% {
+    opacity: 0.5;
   }
   100% {
-    transform: translateX(200%) skewX(-20deg);
-    opacity: 0;
+    transform: translateX(500%) skewX(-30deg);
+    opacity: 0.0;
   }
 }
 @keyframes unlock-fall-fade {
@@ -110,7 +107,7 @@
   animation-delay: 1s; /* 자물쇠가 사라지기 시작할 때쯤 블러가 풀리도록 지연 */
 }
 .animate-fade-shine {
-  animation: fade-shine 3s ease-in-out infinite;
+  animation: fade-shine 2.7s ease-in-out infinite alternate;
 }
 
 /* :root {
