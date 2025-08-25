@@ -1,4 +1,5 @@
 import MissionStatus from "../../component/missionStatus";
+import back from "../../assets/back.svg";
 
 export default function MissionTypeButtons({
   missionTypesWithCount,
@@ -20,7 +21,7 @@ export default function MissionTypeButtons({
         }`}
         aria-label="뒤로가기"
       >
-        &lt;
+        <img src={back} alt="뒤로" className="w-6 h-6" draggable={false} />
       </button>
 
       {/* 타입 버튼 그룹 */}
